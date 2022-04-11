@@ -3,34 +3,41 @@ package ikhwan.binar.binarchallengelima.ui.fragment
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.database.User
 import ikhwan.binar.binarchallengelima.database.UserDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
+import ikhwan.binar.binarchallengelima.ui.viewmodel.DatabaseViewModel
 import java.util.regex.Pattern
 
-class RegisterFragment : Fragment() , View.OnClickListener{
+class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private var userDatabase : UserDatabase? = null
+    private var userDatabase: UserDatabase? = null
+    private val viewModel: DatabaseViewModel by viewModels()
 
     private lateinit var name: String
     private lateinit var email: String
     private lateinit var password: String
     private var cek: Boolean = false
-    private var viewPass : Boolean = false
-    private var viewKonfPass : Boolean = false
+    private var viewPass: Boolean = false
+    private var viewKonfPass: Boolean = false
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -38,6 +45,8 @@ class RegisterFragment : Fragment() , View.OnClickListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userDatabase = UserDatabase.getInstance(requireContext())
+        Log.d("wwwwwwww", userDatabase.toString())
+        viewModel.setUserDb(userDatabase!!)
         binding.apply {
             btnRegister.setOnClickListener(this@RegisterFragment)
             btnViewPass.setOnClickListener(this@RegisterFragment)
@@ -46,36 +55,40 @@ class RegisterFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onClick(p0: View?) {
-        when(p0?.id){
+        when (p0?.id) {
             R.id.btn_register -> {
                 register()
             }
-            R.id.btn_view_pass ->{
-                if (viewPass == false){
+            R.id.btn_view_pass -> {
+                if (viewPass == false) {
                     binding.apply {
                         btnViewPass.setImageResource(R.drawable.ic_green_eye_24)
-                        inputPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                        inputPassword.transformationMethod =
+                            HideReturnsTransformationMethod.getInstance()
                     }
                     viewPass = true
-                }else{
+                } else {
                     binding.apply {
                         btnViewPass.setImageResource(R.drawable.ic_outline_remove_green_eye_24)
-                        inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                        inputPassword.transformationMethod =
+                            PasswordTransformationMethod.getInstance()
                     }
                     viewPass = false
                 }
             }
             R.id.btn_view_konf_pass -> {
-                if (viewKonfPass == false){
+                if (viewKonfPass == false) {
                     binding.apply {
                         btnViewKonfPass.setImageResource(R.drawable.ic_green_eye_24)
-                        inputKonfPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                        inputKonfPassword.transformationMethod =
+                            HideReturnsTransformationMethod.getInstance()
                     }
                     viewKonfPass = true
-                }else{
+                } else {
                     binding.apply {
                         btnViewKonfPass.setImageResource(R.drawable.ic_outline_remove_green_eye_24)
-                        inputKonfPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                        inputKonfPassword.transformationMethod =
+                            PasswordTransformationMethod.getInstance()
                     }
                     viewKonfPass = false
                 }
@@ -83,7 +96,7 @@ class RegisterFragment : Fragment() , View.OnClickListener{
         }
     }
 
-    private fun register(){
+    private fun register() {
         binding.apply {
             name = inputNama.text.toString()
             email = inputEmail.text.toString()
@@ -91,19 +104,22 @@ class RegisterFragment : Fragment() , View.OnClickListener{
             cek = isValidEmail(email)
         }
 
-        if (inputCheck(name, email, password, cek)){
+        if (inputCheck(name, email, password, cek)) {
             registerUser(name, email, password)
         }
     }
 
     private fun registerUser(name: String, email: String, password: String) {
-        val user = User(email, name,null,null,null, password)
+        val user = User(email, name, null, null, null, password)
 
-
+        viewModel.userRegister(user, email)
+        viewModel.toastMessage.observe(this,{
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        })
     }
 
 
-    private fun inputCheck(name: String, email: String, password: String, cek: Boolean) : Boolean {
+    private fun inputCheck(name: String, email: String, password: String, cek: Boolean): Boolean {
         if (name.isEmpty() || email.isEmpty() || password.isEmpty() || !cek
             || binding.inputKonfPassword.text.toString() != password || password.length < 6
         ) {
@@ -146,7 +162,7 @@ class RegisterFragment : Fragment() , View.OnClickListener{
                 }
             }
             return false
-        }else{
+        } else {
             return true
         }
     }
