@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BinarChallengeLima</string>
+    <string name="app_name">The Movie Database</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="masukkan_email">Masukkan Email</string>
@@ -38,4 +38,5 @@
     <string name="pemeran">Cast</string>
     <string name="kilasan_singkat">Overview</string>
     <string name="tagline">tagline</string>
+
 </resources>

@@ -61,7 +61,7 @@ class HomeViewModel : ViewModel(){
     fun getUser(email: String){
         GlobalScope.async {
             val result = userDatabase?.userDao()?.getUserRegistered(email)
-            _user.postValue(result)
+            _user.postValue(result!!)
         }
     }
 }

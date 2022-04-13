@@ -3,27 +3,27 @@ package ikhwan.binar.binarchallengelima.ui.fragment
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.database.User
-import ikhwan.binar.binarchallengelima.database.UserDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
-import ikhwan.binar.binarchallengelima.ui.viewmodel.RegisterViewModel
+import ikhwan.binar.binarchallengelima.ui.viewmodel.DatabaseViewModel
+import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 
 class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private var userDatabase: UserDatabase? = null
-    private val viewModel: RegisterViewModel by viewModels()
+    private val viewModel: DatabaseViewModel by activityViewModels()
 
     private lateinit var name: String
     private lateinit var email: String
@@ -44,9 +44,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userDatabase = UserDatabase.getInstance(requireContext())
 
-        viewModel.setUserDb(userDatabase!!)
         binding.apply {
             btnRegister.setOnClickListener(this@RegisterFragment)
             btnViewPass.setOnClickListener(this@RegisterFragment)
@@ -116,9 +114,14 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             viewModel.userRegister(user, email)
             viewModel.registerStatus.observe(this){
                 if (it){
-                    Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment)
+                    try{
+                        Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment)
+                    }catch (e: IllegalArgumentException){
+                        Log.d("failed", e.toString())
+                    }
+
                 }else{
-                    viewModel.toastMessage.observe(this) {
+                    viewModel.toastRegisterMessage.observe(this) {
                         Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                     }
                 }

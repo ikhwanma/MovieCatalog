@@ -88,6 +88,11 @@ class HomeFragment : Fragment() {
         binding.rvMovie.adapter = adapter
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     companion object {
         const val PREF_USER = "user_preference"
         const val EMAIL = "email"

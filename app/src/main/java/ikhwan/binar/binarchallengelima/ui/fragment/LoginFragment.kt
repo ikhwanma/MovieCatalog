@@ -5,53 +5,54 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.database.UserDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
-import ikhwan.binar.binarchallengelima.ui.viewmodel.LoginViewModel
+import ikhwan.binar.binarchallengelima.ui.viewmodel.DatabaseViewModel
 import java.util.regex.Pattern
 
-class LoginFragment : Fragment() , View.OnClickListener{
+class LoginFragment : Fragment(), View.OnClickListener {
 
-    private var _binding : FragmentLoginBinding? = null
-    private val  binding get() = _binding!!
-    private var userDatabase : UserDatabase? = null
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+    private var userDatabase: UserDatabase? = null
     private lateinit var sharedPreferences: SharedPreferences
-    private val viewModel: LoginViewModel by viewModels()
+    private val viewModel: DatabaseViewModel by activityViewModels()
 
     private lateinit var email: String
     private lateinit var password: String
-    private var viewPass : Boolean = false
+    private var viewPass: Boolean = false
     private var cek: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater,container,false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Login"
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = requireActivity().getSharedPreferences(HomeFragment.PREF_USER, Context.MODE_PRIVATE)
-
-        if (sharedPreferences.contains(HomeFragment.EMAIL)){
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
-        }
-
+        sharedPreferences =
+            requireActivity().getSharedPreferences(HomeFragment.PREF_USER, Context.MODE_PRIVATE)
         userDatabase = UserDatabase.getInstance(requireContext())
         viewModel.setUserDb(userDatabase!!)
+
+        if (sharedPreferences.contains(HomeFragment.EMAIL)) {
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
+        }
 
         binding.btnLogin.setOnClickListener(this)
         binding.btnRegister.setOnClickListener(this)
@@ -59,24 +60,26 @@ class LoginFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onClick(p0: View?) {
-        when(p0?.id){
-            R.id.btn_login ->{
-                login()
+        when (p0?.id) {
+            R.id.btn_login -> {
+                login(p0)
             }
             R.id.btn_register -> {
                 p0.findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
             }
             R.id.btn_view_pass -> {
-                if (!viewPass){
+                if (!viewPass) {
                     binding.apply {
                         btnViewPass.setImageResource(R.drawable.ic_green_eye_24)
-                        inputPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                        inputPassword.transformationMethod =
+                            HideReturnsTransformationMethod.getInstance()
                     }
                     viewPass = true
-                }else{
+                } else {
                     binding.apply {
                         btnViewPass.setImageResource(R.drawable.ic_outline_remove_green_eye_24)
-                        inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                        inputPassword.transformationMethod =
+                            PasswordTransformationMethod.getInstance()
                     }
                     viewPass = false
                 }
@@ -84,23 +87,28 @@ class LoginFragment : Fragment() , View.OnClickListener{
         }
     }
 
-    private fun login() {
+    private fun login(p0: View) {
         binding.apply {
             email = inputEmail.text.toString()
             password = inputPassword.text.toString()
             cek = isValidEmail(email)
         }
-        
-        if (inputCheck(email,password,cek)){
+
+        if (inputCheck(email, password, cek)) {
             viewModel.loginUser(email, password)
-            viewModel.loginStatus.observe(this){
-                if (it){
+            viewModel.loginStatus.observe(this) {
+                if (it) {
                     val editor = sharedPreferences.edit()
                     editor.putString(HomeFragment.EMAIL, email)
                     editor.apply()
-                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_homeFragment)
-                }else{
-                    viewModel.toastMessage.observe(this){ message ->
+                    try {
+                        p0.findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                    } catch (e: IllegalArgumentException) {
+                        Log.d("failed", e.toString())
+                    }
+
+                } else {
+                    viewModel.toastLoginMessage.observe(this) { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -108,7 +116,7 @@ class LoginFragment : Fragment() , View.OnClickListener{
         }
     }
 
-    private fun inputCheck(email: String, password: String, cek: Boolean) : Boolean{
+    private fun inputCheck(email: String, password: String, cek: Boolean): Boolean {
         if (email.isEmpty() || password.isEmpty() || !cek
         ) {
             if (email.isEmpty()) {
@@ -131,7 +139,7 @@ class LoginFragment : Fragment() , View.OnClickListener{
                 }
             }
             return false
-        }else{
+        } else {
             return true
         }
     }
