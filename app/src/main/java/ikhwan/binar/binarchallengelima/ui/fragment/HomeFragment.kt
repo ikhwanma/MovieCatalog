@@ -1,30 +1,23 @@
 package ikhwan.binar.binarchallengelima.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-
+import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.adapter.MovieAdapter
 import ikhwan.binar.binarchallengelima.databinding.FragmentHomeBinding
-import ikhwan.binar.binarchallengelima.model.GetPopularMovieResponse
 import ikhwan.binar.binarchallengelima.model.Result
-import ikhwan.binar.binarchallengelima.network.ApiClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
+import ikhwan.binar.binarchallengelima.ui.viewmodel.HomeViewModel
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,35 +29,38 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, Ikhwan!"
+        setHasOptionsMenu(true)
+        viewModel.fetchData()
+        viewModel.listData.observe(viewLifecycleOwner){
+            showList(it)
+        }
+        viewModel.isSuccess.observe(viewLifecycleOwner){
+            if (it == true){
+                binding.progressCircular.visibility = View.INVISIBLE
+            }
+        }
 
-        fetchData()
     }
 
-    private fun fetchData() {
-        ApiClient.instance.getPopularMovie()
-            .enqueue(object : Callback<GetPopularMovieResponse> {
-                override fun onResponse(
-                    call: Call<GetPopularMovieResponse>,
-                    response: Response<GetPopularMovieResponse>
-                ) {
-                    val body = response.body()
-                    val code = response.code()
-                    if (code == 200){
-                        showList(body?.results)
-                    }
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.profile -> {
+                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_profileFragment)
+                true
+            }
+            else -> true
+        }
+    }
 
-                override fun onFailure(call: Call<GetPopularMovieResponse>, t: Throwable) {
-                    Log.d("onFailure", "gagal")
-                }
-
-
-            })
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.option_menu, menu)
+        super.onCreateOptionsMenu(menu,inflater)
     }
 
     private fun showList(data: List<Result>?) {
         binding.rvMovie.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = MovieAdapter()
+        val adapter = MovieAdapter(this)
         adapter.submitData(data)
         binding.rvMovie.adapter = adapter
     }

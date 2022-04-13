@@ -3,10 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable/style_rating.xml" value="0.26" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/activity_main.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/fragment_home.xml" value="0.30842391304347827" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/fragment_register.xml" value="0.30842391304347827" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/item_movie.xml" value="0.30842391304347827" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/item_movie.xml" value="0.67" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/menu/option_menu.xml" value="0.19722222222222222" />
       </map>
     </option>
   </component>

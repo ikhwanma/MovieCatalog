@@ -10,7 +10,7 @@ import ikhwan.binar.binarchallengelima.database.UserDatabase
 import kotlinx.coroutines.*
 import okhttp3.Dispatcher
 
-class DatabaseViewModel : ViewModel() {
+class RegisterViewModel : ViewModel() {
 
     private var userDatabase: UserDatabase? = null
 
@@ -25,21 +25,16 @@ class DatabaseViewModel : ViewModel() {
     val registerStatus: LiveData<Boolean> = _registerStatus
 
     fun userRegister(user: User, email: String) {
-        Log.d("wwwwwwwwsss", email)
         GlobalScope.async {
             val cekUser = userDatabase?.userDao()?.getUserRegistered(email)
-            Log.d("vvvvvvv", "$cekUser sadjlacek")
             if (cekUser != null) {
                 _toastMessage.postValue("User dengan email ${user.email} sudah terdaftar")
             } else {
                 val result = userDatabase?.userDao()?.registerUser(user)
                 if (result != 0.toLong()) {
-                    Log.d("vvvvvvv", "$result sadjla")
                     _toastMessage.postValue("Sukses mendaftarkan ${user.email}, silakan mencoba untuk login")
-                    Log.d("vvvvvvv", "$_toastMessage sadjla")
                     _registerStatus.postValue(true)
                 } else {
-                    Log.d("vvvvvvv", "$result sadjlaels")
                     _toastMessage.postValue("Gagal mendaftarkan ${user.email}, silakan coba lagi")
                 }
             }

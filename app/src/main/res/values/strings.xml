@@ -27,4 +27,8 @@
     <string name="yakin_ingin_logout">Yakin ingin Logout?</string>
     <string name="see_password">see password</string>
     <string name="image">image</string>
+    <string name="_0_0">0.0</string>
+    <string name="movie_title">Movie Title</string>
+    <string name="release_date">Release Date</string>
+    <string name="profile">Profile</string>
 </resources>

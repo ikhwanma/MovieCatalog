@@ -3,20 +3,17 @@ package ikhwan.binar.binarchallengelima.ui.fragment
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.database.User
 import ikhwan.binar.binarchallengelima.database.UserDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
-import ikhwan.binar.binarchallengelima.ui.viewmodel.DatabaseViewModel
+import ikhwan.binar.binarchallengelima.ui.viewmodel.RegisterViewModel
 import java.util.regex.Pattern
 
 class RegisterFragment : Fragment(), View.OnClickListener {
@@ -24,7 +21,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private val binding get() = _binding!!
 
     private var userDatabase: UserDatabase? = null
-    private val viewModel: DatabaseViewModel by viewModels()
+    private val viewModel: RegisterViewModel by viewModels()
 
     private lateinit var name: String
     private lateinit var email: String
@@ -45,7 +42,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userDatabase = UserDatabase.getInstance(requireContext())
-        Log.d("wwwwwwww", userDatabase.toString())
+
         viewModel.setUserDb(userDatabase!!)
         binding.apply {
             btnRegister.setOnClickListener(this@RegisterFragment)
@@ -60,7 +57,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 register()
             }
             R.id.btn_view_pass -> {
-                if (viewPass == false) {
+                if (!viewPass) {
                     binding.apply {
                         btnViewPass.setImageResource(R.drawable.ic_green_eye_24)
                         inputPassword.transformationMethod =
@@ -77,7 +74,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 }
             }
             R.id.btn_view_konf_pass -> {
-                if (viewKonfPass == false) {
+                if (!viewKonfPass) {
                     binding.apply {
                         btnViewKonfPass.setImageResource(R.drawable.ic_green_eye_24)
                         inputKonfPassword.transformationMethod =
@@ -113,9 +110,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         val user = User(email, name, null, null, null, password)
 
         viewModel.userRegister(user, email)
-        viewModel.toastMessage.observe(this,{
+        viewModel.toastMessage.observe(this) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-        })
+        }
     }
 
 
@@ -125,39 +122,39 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         ) {
             if (name.isEmpty()) {
                 binding.apply {
-                    inputNama.setError("Username Tidak Boleh Kosong")
+                    inputNama.error = "Username Tidak Boleh Kosong"
                     inputNama.requestFocus()
                 }
 
             }
             if (email.isEmpty()) {
                 binding.apply {
-                    inputEmail.setError("Email Tidak Boleh Kosong")
+                    inputEmail.error = "Email Tidak Boleh Kosong"
                     inputEmail.requestFocus()
                 }
             }
             if (password.isEmpty()) {
                 binding.apply {
-                    inputPassword.setError("Password Tidak Boleh Kosong")
+                    inputPassword.error = "Password Tidak Boleh Kosong"
                     inputPassword.requestFocus()
                 }
             }
             if (!cek) {
                 binding.apply {
-                    inputEmail.setError("Email Tidak Sesuai Format")
+                    inputEmail.error = "Email Tidak Sesuai Format"
                     inputEmail.requestFocus()
                 }
             }
             if (binding.inputKonfPassword.text.toString() != password) {
                 binding.apply {
-                    inputKonfPassword.setError("Password Tidak Sama")
+                    inputKonfPassword.error = "Password Tidak Sama"
                     inputKonfPassword.requestFocus()
                 }
 
             }
             if (password.length < 6) {
                 binding.apply {
-                    inputPassword.setError("Password minimal 6 karakter")
+                    inputPassword.error = "Password minimal 6 karakter"
                     inputPassword.requestFocus()
                 }
             }
@@ -168,7 +165,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     }
 
     private fun isValidEmail(email: String): Boolean {
-        val EMAIL_ADDRESS_PATTERN = Pattern.compile(
+        val emailPattern = Pattern.compile(
             "[a-zA-Z0-9+._%\\-]{1,256}" +
                     "@" +
                     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -177,6 +174,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                     ")+"
         )
-        return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
+        return emailPattern.matcher(email).matches()
     }
 }
