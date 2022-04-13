@@ -8,7 +8,7 @@ import retrofit2.create
 
 class ApiClient {
     companion object {
-        val BASE_URL = "https://api.themoviedb.org/"
+        private const val BASE_URL = "https://api.themoviedb.org/"
 
         private val logging : HttpLoggingInterceptor
         get() {

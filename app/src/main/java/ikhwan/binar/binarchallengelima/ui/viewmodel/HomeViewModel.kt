@@ -1,11 +1,10 @@
 package ikhwan.binar.binarchallengelima.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ikhwan.binar.binarchallengelima.model.GetPopularMovieResponse
-import ikhwan.binar.binarchallengelima.model.Result
+import ikhwan.binar.binarchallengelima.model.popularmovie.GetPopularMovieResponse
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.network.ApiClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,8 +12,8 @@ import retrofit2.Response
 
 class HomeViewModel : ViewModel(){
 
-    private val _listData = MutableLiveData<List<Result>>()
-    val listData: LiveData<List<Result>> = _listData
+    private val _listData = MutableLiveData<List<ResultMovie>>()
+    val listData: LiveData<List<ResultMovie>> = _listData
 
     private val _isSuccess = MutableLiveData<Boolean>()
     val isSuccess: LiveData<Boolean> = _isSuccess
@@ -32,7 +31,7 @@ class HomeViewModel : ViewModel(){
                     val body = response.body()
                     val code = response.code()
                     if (code == 200){
-                        _listData.postValue(body?.results)
+                        _listData.postValue(body?.resultMovies)
                         _isSuccess.postValue(true)
                     }else{
                         _failMessage.postValue(response.message())

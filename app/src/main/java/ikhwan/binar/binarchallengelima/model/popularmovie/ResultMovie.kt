@@ -1,9 +1,12 @@
-package ikhwan.binar.binarchallengelima.model
+package ikhwan.binar.binarchallengelima.model.popularmovie
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
-data class Result(
+@Parcelize
+data class ResultMovie(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("backdrop_path")
@@ -32,4 +35,4 @@ data class Result(
     val voteAverage: Double,
     @SerializedName("vote_count")
     val voteCount: Int
-)
+) : Parcelable

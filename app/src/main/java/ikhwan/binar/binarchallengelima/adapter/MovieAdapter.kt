@@ -1,6 +1,5 @@
 package ikhwan.binar.binarchallengelima.adapter
 
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +8,13 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.ItemMovieBinding
-import ikhwan.binar.binarchallengelima.model.Result
-import ikhwan.binar.binarchallengelima.ui.fragment.HomeFragment
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 
-class MovieAdapter(val context: HomeFragment) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
-    class ViewHolder(private val binding: ItemMovieBinding) :
+class MovieAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
+    inner class ViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Result) {
+        fun bind(data: ResultMovie) {
             if (data.releaseDate != "") {
                 val list = data.releaseDate.split("-").toTypedArray()
                 val day = list[2]
@@ -71,6 +68,9 @@ class MovieAdapter(val context: HomeFragment) : RecyclerView.Adapter<MovieAdapte
                 tvMovie.text = data.title
                 Glide.with(itemView).load(urlImage).into(imgMovie)
                 tvRating.text = data.voteAverage.toString()
+                root.setOnClickListener {
+                    onItemClick.onClickItem(data)
+                }
                 when (data.voteAverage) {
                     in 7.0..10.0 -> {
                         tvRating.setTextColor(Color.parseColor("#21d07a"))
@@ -90,19 +90,19 @@ class MovieAdapter(val context: HomeFragment) : RecyclerView.Adapter<MovieAdapte
         }
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Result>() {
-        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<ResultMovie>() {
+        override fun areItemsTheSame(oldItem: ResultMovie, newItem: ResultMovie): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
+        override fun areContentsTheSame(oldItem: ResultMovie, newItem: ResultMovie): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitData(value: List<Result>?) = differ.submitList(value)
+    fun submitData(value: List<ResultMovie>?) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -118,5 +118,9 @@ class MovieAdapter(val context: HomeFragment) : RecyclerView.Adapter<MovieAdapte
 
     override fun getItemCount(): Int {
         return differ.currentList.size
+    }
+
+    interface OnClickListener{
+        fun onClickItem(data: ResultMovie)
     }
 }

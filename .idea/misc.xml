@@ -3,11 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable-v24/ic_green_eye_24.xml" value="0.2795" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable-v24/ic_outline_remove_green_eye_24.xml" value="0.2795" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable-v24/style_edit_text.xml" value="0.2795" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable/style_rating.xml" value="0.26" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/activity_main.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/fragment_detail.xml" value="0.33" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/fragment_home.xml" value="0.30842391304347827" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/fragment_login.xml" value="0.3125" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/fragment_register.xml" value="0.30842391304347827" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/item_movie.xml" value="0.67" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/item_actor.xml" value="0.348731884057971" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/item_cast.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/layout/item_movie.xml" value="0.5" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/menu/option_menu.xml" value="0.19722222222222222" />
       </map>
     </option>
