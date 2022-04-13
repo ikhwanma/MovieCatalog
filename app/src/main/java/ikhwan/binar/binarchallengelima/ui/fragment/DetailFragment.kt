@@ -30,12 +30,12 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
+        (activity as AppCompatActivity?)!!.supportActionBar?.hide()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity?)!!.supportActionBar?.hide()
         val data = arguments?.getParcelable<ResultMovie>(EXTRA_DATA) as ResultMovie
         viewModel.setId(data.id)
 

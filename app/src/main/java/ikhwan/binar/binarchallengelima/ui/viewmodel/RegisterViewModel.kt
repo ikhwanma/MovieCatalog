@@ -26,6 +26,7 @@ class RegisterViewModel : ViewModel() {
 
     fun userRegister(user: User, email: String) {
         GlobalScope.async {
+            _registerStatus.postValue(false)
             val cekUser = userDatabase?.userDao()?.getUserRegistered(email)
             if (cekUser != null) {
                 _toastMessage.postValue("User dengan email ${user.email} sudah terdaftar")

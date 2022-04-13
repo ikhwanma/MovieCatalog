@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.database.User
 import ikhwan.binar.binarchallengelima.database.UserDatabase
@@ -36,6 +38,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Register"
         return binding.root
     }
 
@@ -109,10 +112,19 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private fun registerUser(name: String, email: String, password: String) {
         val user = User(email, name, null, null, null, password)
 
-        viewModel.userRegister(user, email)
-        viewModel.toastMessage.observe(this) {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        if (inputCheck(name, email, password, cek)){
+            viewModel.userRegister(user, email)
+            viewModel.registerStatus.observe(this){
+                if (it){
+                    Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment)
+                }else{
+                    viewModel.toastMessage.observe(this) {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
+
     }
 
 
