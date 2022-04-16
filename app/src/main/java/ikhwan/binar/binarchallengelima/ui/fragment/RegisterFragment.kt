@@ -23,7 +23,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    //    private val viewModel: DatabaseViewModel by activityViewModels()
     private val viewModel: UserApiViewModel by activityViewModels()
 
     private lateinit var name: String

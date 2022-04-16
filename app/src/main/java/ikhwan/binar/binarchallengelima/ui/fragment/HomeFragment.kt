@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -30,15 +31,33 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ApiViewModel by activityViewModels()
-    private val dbViewModel: UserApiViewModel by activityViewModels()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var userSharedPreferences: SharedPreferences
+    private val userViewModel: UserApiViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        sharedPreferences =
+            requireActivity().getSharedPreferences(PREF_VIEW, Context.MODE_PRIVATE)
+        userSharedPreferences = requireActivity().getSharedPreferences(LoginFragment.PREF_USER, Context.MODE_PRIVATE)
+        val email = userSharedPreferences.getString(LoginFragment.EMAIL, "")
+        userViewModel.getAllUsers()
+        userViewModel.listUsers.observe(viewLifecycleOwner){
+            for (data in it){
+                if (email == data.email){
+                    userViewModel.setUser(data)
+                }
+            }
+        }
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
-        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, Ikhwan!"
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
+        userViewModel.user.observe(viewLifecycleOwner) {
+            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${it.username}!"
+        }
+
         val ai: ApplicationInfo = requireActivity().applicationContext.packageManager
             .getApplicationInfo(
                 requireActivity().applicationContext.packageName,
@@ -46,6 +65,7 @@ class HomeFragment : Fragment() {
             )
         val value = ai.metaData["apiKey"]
         viewModel.setApiKey(value.toString())
+
         return binding.root
     }
 
@@ -56,12 +76,9 @@ class HomeFragment : Fragment() {
         viewModel.getListMovieData()
         viewModel.getListNowPlaying()
 
-        dbViewModel.user.observe(viewLifecycleOwner) {
-            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${it.username}!"
-        }
-
+        val cek = sharedPreferences.getBoolean(CEK, false)
+        binding.switchRv.isChecked = cek
         viewModel.listData.observe(viewLifecycleOwner) {
-            val cek = binding.switchRv.isChecked
             if (cek){
                 showListLinear(it)
             }else{
@@ -69,8 +86,10 @@ class HomeFragment : Fragment() {
             }
             binding.switchRv.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
                 if (isChecked){
+                    sharedPreferences.edit().putBoolean(CEK, true).apply()
                     showListLinear(it)
                 }else{
+                    sharedPreferences.edit().putBoolean(CEK, false).apply()
                     showList(it)
                 }
             })
@@ -144,9 +163,9 @@ class HomeFragment : Fragment() {
     }
 
 
-    companion object {
-        const val PREF_USER = "user_preference"
-        const val EMAIL = "email"
+    companion object{
+        const val PREF_VIEW = "view_preference"
+        const val CEK = "cek"
     }
 
 }

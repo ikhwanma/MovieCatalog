@@ -41,4 +41,7 @@
     <string name="now_playing">Now Playing</string>
     <string name="popular_movie">Popular Movie</string>
     <string name="lihat_detail"><![CDATA[Lihat Detail >]]></string>
+    <string name="masukkan_alamat">Masukkan Alamat</string>
+    <string name="masukkan_nama_lengkap">Masukkan Nama Lengkap</string>
+    <string name="masukkan_tanggal_lahir">Masukkan Tanggal Lahir</string>
 </resources>

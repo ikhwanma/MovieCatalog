@@ -46,11 +46,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences =
-            requireActivity().getSharedPreferences(HomeFragment.PREF_USER, Context.MODE_PRIVATE)
+            requireActivity().getSharedPreferences(PREF_USER, Context.MODE_PRIVATE)
         userDatabase = UserDatabase.getInstance(requireContext())
 
 
-        if (sharedPreferences.contains(HomeFragment.EMAIL)) {
+        if (sharedPreferences.contains(EMAIL)) {
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
         }
 
@@ -109,7 +109,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 try {
                     if (cek) {
                         val editor = sharedPreferences.edit()
-                        editor.putString(HomeFragment.EMAIL, email)
+                        editor.putString(EMAIL, email)
                         editor.apply()
                         p0.findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     } else {
@@ -167,6 +167,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     ")+"
         )
         return emailPattern.matcher(email).matches()
+    }
+
+    companion object {
+        const val PREF_USER = "user_preference"
+        const val EMAIL = "email"
     }
 
 }

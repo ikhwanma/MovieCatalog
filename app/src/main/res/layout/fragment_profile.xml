@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.fragment.ProfileFragment"
-    android:layout_margin="20dp"/>
+    android:layout_margin="20dp">
+
+    <EditText
+        android:id="@+id/input_nama"
+        style="@style/InputTextStyle"
+        android:hint="@string/masukkan_nama"
+        android:inputType="text"
+        android:autofillHints="username" />
+    <EditText
+        android:id="@+id/input_full_name"
+        style="@style/InputTextStyle"
+        android:hint="@string/masukkan_nama_lengkap"
+        android:inputType="text"
+        android:layout_marginTop="5dp"
+        android:autofillHints="name" />
+    <EditText
+        android:id="@+id/input_alamat"
+        style="@style/InputTextStyle"
+        android:hint="@string/masukkan_alamat"
+        android:inputType="text"
+        android:layout_marginTop="5dp"
+        android:autofillHints="postalAddress" />
+    <EditText
+        android:id="@+id/input_email"
+        style="@style/InputTextStyle"
+        android:hint="@string/masukkan_email"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="5dp"
+        android:autofillHints="emailAddress" />
+    <EditText
+        android:id="@+id/input_password"
+        style="@style/InputTextStyle"
+        android:hint="@string/masukkan_password"
+        android:inputType="textPassword"
+        android:layout_marginTop="5dp"
+        android:autofillHints="password" />
+    <EditText
+        android:id="@+id/input_date"
+        style="@style/InputTextStyle"
+        android:hint="@string/masukkan_tanggal_lahir"
+        android:inputType="date"
+        android:layout_marginTop="5dp"
+        android:autofillHints="date" />
+</LinearLayout>

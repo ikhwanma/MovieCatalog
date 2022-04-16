@@ -11,6 +11,7 @@ import retrofit2.http.*
 
 interface ApiService {
 
+    //=====================Movie========================
     @GET("/3/movie/popular")
     fun getPopularMovie(
         @Query("api_key") api_key: String
