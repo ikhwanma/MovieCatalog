@@ -9,6 +9,7 @@ import retrofit2.create
 class ApiClient {
     companion object {
         private const val BASE_URL = "https://api.themoviedb.org/"
+        private const val BASE_USER_URL = "https://625a859b43fda1299a186b77.mockapi.io/themovie/"
 
         private val logging : HttpLoggingInterceptor
         get() {
@@ -28,5 +29,15 @@ class ApiClient {
                 .build()
             retrofit.create(ApiService::class.java)
         }
+
+        val userInstance: ApiService by lazy {
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_USER_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+            retrofit.create(ApiService::class.java)
+        }
+
     }
 }

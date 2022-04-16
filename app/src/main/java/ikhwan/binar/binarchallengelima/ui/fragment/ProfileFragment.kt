@@ -3,10 +3,8 @@ package ikhwan.binar.binarchallengelima.ui.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
@@ -32,20 +30,34 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
 
         sharedPreferences =
             requireActivity().getSharedPreferences(HomeFragment.PREF_USER, Context.MODE_PRIVATE)
 
-        binding.btnLogout.setOnClickListener(this)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.logout -> {
+                sharedPreferences.edit().clear().apply()
+                val navOptions = NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
+                Navigation.findNavController(requireView()).navigate(R.id.action_profileFragment_to_loginFragment,null, navOptions)
+                true
+            }
+            else -> true
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
-            R.id.btn_logout -> {
-                sharedPreferences.edit().clear().apply()
-                val navOptions = NavOptions.Builder().setPopUpTo(R.id.profileFragment, true).build()
-                p0.findNavController().navigate(R.id.action_profileFragment_to_loginFragment,null, navOptions)
-            }
+
         }
     }
 

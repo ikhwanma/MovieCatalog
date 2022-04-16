@@ -26,9 +26,9 @@
                 android:id="@+id/cv_rating_background"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:backgroundTint="@color/green_rating"
                 android:layout_alignEnd="@+id/img_background_detail"
                 android:layout_margin="20dp"
+                android:backgroundTint="@color/green_rating"
                 android:elevation="10dp"
                 android:translationZ="5dp"
                 app:cardCornerRadius="25dp">
@@ -90,6 +90,7 @@
                 android:id="@+id/img_background_detail"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
+                android:contentDescription="@string/image"
                 android:scaleType="centerCrop"
                 android:tintMode="multiply"
                 app:srcCompat="@color/midnight_blue"
@@ -136,13 +137,12 @@
                 android:id="@+id/tv_tagline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_movie"
                 android:gravity="center_horizontal"
                 android:text="@string/tagline"
                 android:textColor="#B6B6B6"
-                android:textStyle="italic"
                 android:textSize="16sp"
-                android:layout_below="@+id/tv_movie"
-                />
+                android:textStyle="italic" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/kilasan_singkat"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -164,21 +164,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/kilasan_singkat"
-                    android:textColor="@color/black"
-                     />
+                    android:textColor="@color/black" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pemeran"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_cast"
                     android:layout_width="match_parent"
-                    android:layout_height="135dp"
+                    android:layout_height="170dp"
                     android:orientation="horizontal"
                     tools:itemCount="5"
                     tools:listitem="@layout/item_cast" />

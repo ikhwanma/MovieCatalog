@@ -13,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.database.User
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
-import ikhwan.binar.binarchallengelima.ui.viewmodel.DatabaseViewModel
+import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
 import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 
@@ -23,7 +23,8 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DatabaseViewModel by activityViewModels()
+    //    private val viewModel: DatabaseViewModel by activityViewModels()
+    private val viewModel: UserApiViewModel by activityViewModels()
 
     private lateinit var name: String
     private lateinit var email: String
@@ -39,6 +40,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Register"
+        viewModel.getAllUsers()
         return binding.root
     }
 
@@ -108,22 +110,29 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     }
 
     private fun registerUser(name: String, email: String, password: String) {
-        val user = User(email, name, null, null, null, password)
+        val regUser = PostUserResponse("", "", email, "", password, name)
 
-        if (inputCheck(name, email, password, cek)){
-            viewModel.userRegister(user, email)
-            viewModel.registerStatus.observe(this){
-                if (it){
-                    try{
-                        Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment)
-                    }catch (e: IllegalArgumentException){
-                        Log.d("failed", e.toString())
+        if (inputCheck(name, email, password, cek)) {
+            viewModel.registerUser(regUser)
+            viewModel.registerStatus.observe(this) {
+                try {
+                    if (it != null) {
+                        if (it) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Sukses mendaftarkan ${regUser.email}, silakan mencoba untuk login",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Navigation.findNavController(requireView())
+                                .navigate(R.id.action_registerFragment_to_loginFragment)
+                        } else {
+                            viewModel.toastRegisterMessage.observe(this) {
+                                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
-
-                }else{
-                    viewModel.toastRegisterMessage.observe(this) {
-                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                    }
+                } catch (e: IllegalArgumentException) {
+                    Log.d("fail", e.toString())
                 }
             }
         }

@@ -4,13 +4,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragment.ProfileFragment"
-    android:layout_margin="20dp">
-
-    <Button
-        android:id="@+id/btn_logout"
-        style="@style/ButtonStyle"
-        android:text="@string/logout"
-        android:layout_alignParentBottom="true"/>
-
-
-</RelativeLayout>
+    android:layout_margin="20dp"/>

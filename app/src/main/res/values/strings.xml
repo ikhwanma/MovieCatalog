@@ -38,5 +38,7 @@
     <string name="pemeran">Cast</string>
     <string name="kilasan_singkat">Overview</string>
     <string name="tagline">tagline</string>
-
+    <string name="now_playing">Now Playing</string>
+    <string name="popular_movie">Popular Movie</string>
+    <string name="lihat_detail"><![CDATA[Lihat Detail >]]></string>
 </resources>

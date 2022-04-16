@@ -18,7 +18,7 @@ import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.database.UserDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
-import ikhwan.binar.binarchallengelima.ui.viewmodel.DatabaseViewModel
+import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
 import java.util.regex.Pattern
 
 class LoginFragment : Fragment(), View.OnClickListener {
@@ -27,7 +27,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private val binding get() = _binding!!
     private var userDatabase: UserDatabase? = null
     private lateinit var sharedPreferences: SharedPreferences
-    private val viewModel: DatabaseViewModel by activityViewModels()
+    private val viewModel: UserApiViewModel by activityViewModels()
 
     private lateinit var email: String
     private lateinit var password: String
@@ -48,7 +48,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         sharedPreferences =
             requireActivity().getSharedPreferences(HomeFragment.PREF_USER, Context.MODE_PRIVATE)
         userDatabase = UserDatabase.getInstance(requireContext())
-        viewModel.setUserDb(userDatabase!!)
+
 
         if (sharedPreferences.contains(HomeFragment.EMAIL)) {
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
@@ -95,24 +95,36 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
-            viewModel.loginUser(email, password)
-            viewModel.loginStatus.observe(this) {
-                if (it) {
-                    val editor = sharedPreferences.edit()
-                    editor.putString(HomeFragment.EMAIL, email)
-                    editor.apply()
-                    try {
-                        p0.findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                    } catch (e: IllegalArgumentException) {
-                        Log.d("failed", e.toString())
-                    }
+            viewModel.getAllUsers()
 
-                } else {
-                    viewModel.toastLoginMessage.observe(this) { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            viewModel.listUsers.observe(viewLifecycleOwner) {
+                var cek = false
+                for (data in it) {
+                    if (email == data.email && password == data.password) {
+                        cek = true
+                        viewModel.setUser(data)
+                        break
                     }
                 }
+                try {
+                    if (cek) {
+                        val editor = sharedPreferences.edit()
+                        editor.putString(HomeFragment.EMAIL, email)
+                        editor.apply()
+                        p0.findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Email atau Password salah",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: IllegalArgumentException) {
+                    Log.d("failed", e.toString())
+                }
+
             }
+
         }
     }
 

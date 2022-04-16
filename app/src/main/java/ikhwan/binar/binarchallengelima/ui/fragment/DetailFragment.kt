@@ -7,15 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import ikhwan.binar.binarchallengelima.adapter.CastAdapter
 import ikhwan.binar.binarchallengelima.databinding.FragmentDetailBinding
 import ikhwan.binar.binarchallengelima.model.credit.Cast
-import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
-import ikhwan.binar.binarchallengelima.ui.viewmodel.DetailViewModel
+import ikhwan.binar.binarchallengelima.ui.viewmodel.ApiViewModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 class DetailFragment : Fragment() {
@@ -23,7 +22,7 @@ class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DetailViewModel by viewModels()
+    private val viewModel: ApiViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,11 +35,6 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val data = arguments?.getParcelable<ResultMovie>(EXTRA_DATA) as ResultMovie
-        viewModel.setId(data.id)
-
-        viewModel.getData()
-        viewModel.getCast()
 
         viewModel.isSuccess.observe(viewLifecycleOwner) {
             if (it == true) {
@@ -55,6 +49,11 @@ class DetailFragment : Fragment() {
                 }
             }
         }
+        viewModel.id.observe(viewLifecycleOwner) { id ->
+            viewModel.getData(id)
+            viewModel.getCast(id)
+        }
+
         viewModel.data.observe(viewLifecycleOwner) {
             val imgUrl = "https://image.tmdb.org/t/p/w500/${it.posterPath}"
             val date = it.releaseDate.split("-").toTypedArray()
@@ -109,11 +108,6 @@ class DetailFragment : Fragment() {
         val adapter = CastAdapter()
         adapter.submitData(cast)
         binding.rvCast.adapter = adapter
-    }
-
-
-    companion object {
-        const val EXTRA_DATA = "extra_data"
     }
 
 }
