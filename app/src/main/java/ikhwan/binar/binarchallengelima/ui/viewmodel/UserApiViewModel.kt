@@ -30,6 +30,13 @@ class UserApiViewModel : ViewModel(){
     private val _registerStatus = MutableLiveData<Boolean?>()
     val registerStatus: LiveData<Boolean?> = _registerStatus
 
+    private val _loginStatus = MutableLiveData<Boolean>()
+    val loginStatus: LiveData<Boolean> = _loginStatus
+
+    fun setLoginStatus(status : Boolean){
+        _loginStatus.postValue(status)
+    }
+
     private val _updateStatus = MutableLiveData<Boolean?>()
     val updateStatus: LiveData<Boolean?> = _updateStatus
 

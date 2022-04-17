@@ -17,6 +17,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
+import ikhwan.binar.binarchallengelima.ui.dialogfragment.LoginWaitFragment
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
 import java.util.regex.Pattern
 
@@ -59,6 +60,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btn_login -> {
+                viewModel.setLoginStatus(false)
+                LoginWaitFragment().show(requireActivity().supportFragmentManager, null)
                 login(p0)
             }
             R.id.btn_register -> {
@@ -100,6 +103,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     if (email == data.email && password == data.password) {
                         cek = true
                         viewModel.setUser(data)
+                        viewModel.setLoginStatus(true)
                         break
                     }
                 }

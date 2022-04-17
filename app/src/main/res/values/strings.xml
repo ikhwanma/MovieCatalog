@@ -45,4 +45,5 @@
     <string name="masukkan_nama_lengkap">Masukkan Nama Lengkap</string>
     <string name="masukkan_tanggal_lahir">Masukkan Tanggal Lahir</string>
     <string name="update_user">Update User</string>
+    <string name="logging_in_please_wait">Logging In, Please Wait ...</string>
 </resources>

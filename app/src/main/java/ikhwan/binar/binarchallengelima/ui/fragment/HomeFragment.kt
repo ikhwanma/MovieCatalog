@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,6 +88,8 @@ class HomeFragment : Fragment() {
             binding.switchRv.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
                 if (isChecked){
                     sharedPreferences.edit().putBoolean(CEK, true).apply()
+                    val navOptions = NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
+                    Navigation.findNavController(view).navigate(R.id.homeFragment, null, navOptions)
                     showListLinear(it)
                 }else{
                     sharedPreferences.edit().putBoolean(CEK, false).apply()
