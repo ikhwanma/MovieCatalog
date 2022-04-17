@@ -116,7 +116,7 @@ class DetailFragment : Fragment() {
         val adapter = SimiliarAdapter(object : SimiliarAdapter.OnClickListener{
             override fun onClickItem(data: ResultMovie) {
                 viewModel.setId(data.id)
-                Navigation.findNavController(requireView()).navigate(R.id.detailFragment)
+                Navigation.findNavController(requireView()).navigate(R.id.action_detailFragment_self)
             }
 
         })
