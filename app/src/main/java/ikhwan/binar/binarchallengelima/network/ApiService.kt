@@ -43,4 +43,9 @@ interface ApiService {
     fun addUsers(
         @Body user : PostUserResponse
     ): Call<GetUserResponseItem>
+
+    @PUT("/users/{id}")
+    fun updateUser(
+        @Body user : PostUserResponse, @Path("id") id:String
+    ) : Call<GetUserResponseItem>
 }

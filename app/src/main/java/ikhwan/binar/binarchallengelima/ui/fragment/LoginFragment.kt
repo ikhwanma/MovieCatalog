@@ -16,7 +16,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.database.UserDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
 import java.util.regex.Pattern
@@ -25,7 +24,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private var userDatabase: UserDatabase? = null
     private lateinit var sharedPreferences: SharedPreferences
     private val viewModel: UserApiViewModel by activityViewModels()
 
@@ -47,7 +45,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences =
             requireActivity().getSharedPreferences(PREF_USER, Context.MODE_PRIVATE)
-        userDatabase = UserDatabase.getInstance(requireContext())
 
 
         if (sharedPreferences.contains(EMAIL)) {

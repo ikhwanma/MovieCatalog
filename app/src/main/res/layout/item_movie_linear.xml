@@ -99,6 +99,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
@@ -107,9 +108,8 @@
             android:layout_marginHorizontal="5dp"
             android:layout_toStartOf="@+id/cv_rating_background"
             android:layout_toEndOf="@+id/cv_img"
-            android:text="@string/movie_name"
-            android:textSize="16sp"
-             />
+            android:text=""
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"

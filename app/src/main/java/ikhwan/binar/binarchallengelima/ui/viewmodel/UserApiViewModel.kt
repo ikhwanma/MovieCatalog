@@ -30,6 +30,9 @@ class UserApiViewModel : ViewModel(){
     private val _registerStatus = MutableLiveData<Boolean?>()
     val registerStatus: LiveData<Boolean?> = _registerStatus
 
+    private val _updateStatus = MutableLiveData<Boolean?>()
+    val updateStatus: LiveData<Boolean?> = _updateStatus
+
     fun getAllUsers(){
         ApiClient.userInstance.getAllUsers()
             .enqueue(object :Callback<List<GetUserResponseItem>>{
@@ -82,8 +85,24 @@ class UserApiViewModel : ViewModel(){
             _toastRegisterMessage.postValue("User dengan email ${user.email} sudah terdaftar")
             _registerStatus.postValue(false)
         }
+    }
 
+    fun updateUser(user: PostUserResponse, id: String){
+        ApiClient.userInstance.updateUser(user, id)
+            .enqueue(object : Callback<GetUserResponseItem>{
+                override fun onResponse(
+                    call: Call<GetUserResponseItem>,
+                    response: Response<GetUserResponseItem>
+                ) {
+                    if (response.isSuccessful){
+                        _updateStatus.postValue(true)
+                    }
+                }
 
+                override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
+                    _updateStatus.postValue(false)
+                }
 
+            })
     }
 }

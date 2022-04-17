@@ -48,4 +48,14 @@
         android:inputType="date"
         android:layout_marginTop="5dp"
         android:autofillHints="date" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_update"
+            android:layout_alignParentBottom="true"
+            style="@style/ButtonStyle"
+            android:text="@string/update_user"/>
+    </RelativeLayout>
+
 </LinearLayout>
