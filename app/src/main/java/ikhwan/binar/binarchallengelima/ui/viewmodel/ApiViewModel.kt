@@ -48,6 +48,9 @@ class ApiViewModel : ViewModel() {
     private val _cast = MutableLiveData<GetCreditResponse>()
     val cast: LiveData<GetCreditResponse> = _cast
 
+    private val _similiar = MutableLiveData<List<ResultMovie>>()
+    val similiar: LiveData<List<ResultMovie>> = _similiar
+
     fun getListMovieData() {
         ApiClient.instance.getPopularMovie(apiKey.value!!)
             .enqueue(object : Callback<GetPopularMovieResponse> {
@@ -128,6 +131,26 @@ class ApiViewModel : ViewModel() {
 
                 override fun onFailure(call: Call<GetCreditResponse>, t: Throwable) {
 
+                }
+
+            })
+    }
+
+    fun getSimiliar(id: Int){
+        ApiClient.instance.getSimiliarMovie(id, apiKey.value!!)
+            .enqueue(object : Callback<GetPopularMovieResponse>{
+                override fun onResponse(
+                    call: Call<GetPopularMovieResponse>,
+                    response: Response<GetPopularMovieResponse>
+                ) {
+                    if (response.isSuccessful){
+                        val body = response.body()
+                        _similiar.postValue(body?.resultMovies)
+                    }
+                }
+
+                override fun onFailure(call: Call<GetPopularMovieResponse>, t: Throwable) {
+                    TODO("Not yet implemented")
                 }
 
             })

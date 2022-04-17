@@ -8,12 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.adapter.CastAdapter
+import ikhwan.binar.binarchallengelima.adapter.SimiliarAdapter
 import ikhwan.binar.binarchallengelima.databinding.FragmentDetailBinding
 import ikhwan.binar.binarchallengelima.model.credit.Cast
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.ui.viewmodel.ApiViewModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 
@@ -52,6 +56,7 @@ class DetailFragment : Fragment() {
         viewModel.id.observe(viewLifecycleOwner) { id ->
             viewModel.getData(id)
             viewModel.getCast(id)
+            viewModel.getSimiliar(id)
         }
 
         viewModel.data.observe(viewLifecycleOwner) {
@@ -100,6 +105,23 @@ class DetailFragment : Fragment() {
         viewModel.cast.observe(viewLifecycleOwner) {
             showList(it.cast)
         }
+
+        viewModel.similiar.observe(viewLifecycleOwner){
+            showListSimiliar(it)
+        }
+    }
+
+    private fun showListSimiliar(it: List<ResultMovie>?) {
+        binding.rvSimiliar.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        val adapter = SimiliarAdapter(object : SimiliarAdapter.OnClickListener{
+            override fun onClickItem(data: ResultMovie) {
+                viewModel.setId(data.id)
+                Navigation.findNavController(requireView()).navigate(R.id.detailFragment)
+            }
+
+        })
+        adapter.submitData(it)
+        binding.rvSimiliar.adapter = adapter
     }
 
     private fun showList(cast: List<Cast>) {

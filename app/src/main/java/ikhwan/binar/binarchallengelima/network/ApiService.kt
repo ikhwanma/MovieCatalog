@@ -35,6 +35,12 @@ interface ApiService {
         @Query("api_key") api_key: String
     ): Call<GetNowPlayingResponse>
 
+    @GET("/3/movie/{movie_id}/similar")
+    fun getSimiliarMovie(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") api_key: String
+    ): Call<GetPopularMovieResponse>
+
     //=====================User========================
     @GET("/users")
     fun getAllUsers() : Call<List<GetUserResponseItem>>

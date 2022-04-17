@@ -17,6 +17,7 @@ class CastAdapter : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
                 val urlImage = baseUrlImg + data.profilePath
 
                 tvName.text = data.name
+                tvCharacter.text = data.character
                 Glide.with(itemView).load(urlImage).into(imgCast)
             }
         }
