@@ -158,6 +158,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showList(data: List<ResultMovie>?) {
+        binding.rvMovie.isNestedScrollingEnabled = false
         binding.rvMovie.layoutManager = GridLayoutManager(requireContext(), 2)
         val adapter = MovieAdapter(object : MovieAdapter.OnClickListener {
             override fun onClickItem(data: ResultMovie) {

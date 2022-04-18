@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.fragment.HomeFragment">
+    tools:context=".ui.fragment.HomeFragment"
+    tools:ignore="ScrollViewCount">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
 
         <TextView
             android:id="@+id/tv_now"
@@ -25,9 +32,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_now"
             android:layout_width="match_parent"
-            android:padding="5dp"
-            android:layout_height="260dp"
+            android:layout_height="270dp"
             android:layout_below="@+id/tv_now"
+            android:padding="5dp"
             tools:listitem="@layout/item_now" />
 
         <TextView
@@ -47,14 +54,10 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/tv_popular"
             android:layout_alignParentBottom="true"
+            android:overScrollMode="never"
             tools:itemCount="2"
             tools:listitem="@layout/item_movie_linear" />
 
-        <ProgressBar
-            android:id="@+id/progress_circular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
 
         <Switch
             android:id="@+id/switch_rv"
@@ -88,4 +91,4 @@
     </RelativeLayout>
 
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
