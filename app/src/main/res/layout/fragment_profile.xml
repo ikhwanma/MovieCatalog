@@ -1,61 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.fragment.ProfileFragment"
-    android:layout_margin="20dp">
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp">
 
-    <EditText
-        android:id="@+id/input_nama"
-        style="@style/InputTextStyle"
-        android:hint="@string/masukkan_nama"
-        android:inputType="text"
-        android:autofillHints="username" />
-    <EditText
-        android:id="@+id/input_full_name"
-        style="@style/InputTextStyle"
-        android:hint="@string/masukkan_nama_lengkap"
-        android:inputType="text"
-        android:layout_marginTop="5dp"
-        android:autofillHints="name" />
-    <EditText
-        android:id="@+id/input_alamat"
-        style="@style/InputTextStyle"
-        android:hint="@string/masukkan_alamat"
-        android:inputType="text"
-        android:layout_marginTop="5dp"
-        android:autofillHints="postalAddress" />
-    <EditText
-        android:id="@+id/input_email"
-        style="@style/InputTextStyle"
-        android:hint="@string/masukkan_email"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="5dp"
-        android:autofillHints="emailAddress" />
-    <EditText
-        android:id="@+id/input_password"
-        style="@style/InputTextStyle"
-        android:hint="@string/masukkan_password"
-        android:inputType="textPassword"
-        android:layout_marginTop="5dp"
-        android:autofillHints="password" />
-    <EditText
-        android:id="@+id/input_date"
-        style="@style/InputTextStyle"
-        android:hint="@string/masukkan_tanggal_lahir"
-        android:inputType="date"
-        android:layout_marginTop="5dp"
-        android:autofillHints="date" />
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/midnight_blue"
+            android:textSize="18sp"
+            android:text="@string/username" />
+
+        <EditText
+            android:id="@+id/input_nama"
+            style="@style/InputTextStyle"
+            android:hint="@string/masukkan_nama"
+            android:inputType="text"
+            android:autofillHints="username" />
+
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/midnight_blue"
+            android:textSize="18sp"
+            android:text="@string/nama_lengkap" />
+
+        <EditText
+            android:id="@+id/input_full_name"
+            style="@style/InputTextStyle"
+            android:hint="@string/masukkan_nama_lengkap"
+            android:inputType="text"
+            android:layout_marginTop="5dp"
+            android:autofillHints="name" />
+
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/midnight_blue"
+            android:textSize="18sp"
+            android:text="@string/alamat" />
+
+        <EditText
+            android:id="@+id/input_alamat"
+            style="@style/InputTextStyle"
+            android:hint="@string/masukkan_alamat"
+            android:inputType="text"
+            android:layout_marginTop="5dp"
+            android:autofillHints="postalAddress" />
+
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/midnight_blue"
+            android:textSize="18sp"
+            android:text="@string/email_can_t_be_edited" />
+
+        <EditText
+            android:id="@+id/input_email"
+            style="@style/InputTextStyle"
+            android:inputType="none"
+            android:textIsSelectable="true"
+            android:focusable="false"
+            android:hint="@string/masukkan_email"
+            android:textColor="@color/grey"
+            android:layout_marginTop="5dp"
+            android:autofillHints="emailAddress"
+            tools:ignore="TextFields" />
+
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/midnight_blue"
+            android:textSize="18sp"
+            android:text="@string/password" />
+
+        <EditText
+            android:id="@+id/input_password"
+            style="@style/InputTextStyle"
+            android:hint="@string/masukkan_password"
+            android:inputType="textPassword"
+            android:layout_marginTop="5dp"
+            android:autofillHints="password" />
+
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/midnight_blue"
+            android:textSize="18sp"
+            android:text="@string/tanggal_lahir" />
+
+        <EditText
+            android:id="@+id/input_date"
+            style="@style/InputTextStyle"
+            android:inputType="none"
+            android:textIsSelectable="true"
+            android:focusable="false"
+            android:hint="@string/masukkan_tanggal_lahir"
+            android:layout_marginTop="5dp"
+            android:autofillHints="date"
+            tools:ignore="TextFields" />
+
         <Button
             android:id="@+id/btn_update"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="20dp"
             style="@style/ButtonStyle"
-            android:text="@string/update_user"/>
-    </RelativeLayout>
+            android:text="@string/update_user" />
 
-</LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>

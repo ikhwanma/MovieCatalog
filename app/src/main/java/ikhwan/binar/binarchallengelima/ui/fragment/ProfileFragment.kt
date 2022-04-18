@@ -1,5 +1,6 @@
 package ikhwan.binar.binarchallengelima.ui.fragment
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -15,6 +16,9 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentProfileBinding
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
+import java.time.LocalDate
+import java.time.Period
+import java.util.*
 
 
 class ProfileFragment : Fragment(), View.OnClickListener {
@@ -23,6 +27,11 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private val binding get() = _binding!!
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var viewSharedPreferences: SharedPreferences
+
+    private val c = Calendar.getInstance()
+    private val year = c.get(Calendar.YEAR)
+    private val month = c.get(Calendar.MONTH)
+    private val day = c.get(Calendar.DAY_OF_MONTH)
 
     private lateinit var id : String
 
@@ -34,6 +43,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Edit Profile"
+
+
         return binding.root
     }
 
@@ -50,14 +61,21 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 inputAlamat.setText(it.address)
                 inputDate.setText(it.birthDate)
                 inputEmail.setText(it.email)
-                inputEmail.isEnabled = false
                 inputFullName.setText(it.fullName)
                 inputPassword.setText(it.password)
             }
             this.id = it.id
         }
-        binding.btnUpdate.setOnClickListener(this)
 
+        binding.btnUpdate.setOnClickListener(this)
+        binding.inputDate.setOnClickListener{
+            DatePickerDialog(requireContext(), { _, i, i2, i3 ->
+                val now = c.get(Calendar.YEAR)
+                val age = now - i
+                val txtDate = "$i3/$i2/$i ($age y.o)"
+                binding.inputDate.setText(txtDate)
+            }, year, month, day).show()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -47,4 +47,10 @@
     <string name="update_user">Update User</string>
     <string name="logging_in_please_wait">Logging In, Please Wait ...</string>
     <string name="similiar_movie">Similiar Movie</string>
+    <string name="email_can_t_be_edited">Email (can\'t be edited)</string>
+    <string name="username">Username</string>
+    <string name="nama_lengkap">Nama Lengkap</string>
+    <string name="alamat">Alamat</string>
+    <string name="password">Password</string>
+    <string name="tanggal_lahir">Tanggal Lahir</string>
 </resources>

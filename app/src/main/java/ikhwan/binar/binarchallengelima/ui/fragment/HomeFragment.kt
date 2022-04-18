@@ -25,6 +25,7 @@ import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.ui.viewmodel.ApiViewModel
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
+import java.util.*
 
 
 class HomeFragment : Fragment() {
@@ -56,7 +57,11 @@ class HomeFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
         (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
         userViewModel.user.observe(viewLifecycleOwner) {
-            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${it.username}!"
+            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${it.username.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }}!"
         }
 
         val ai: ApplicationInfo = requireActivity().applicationContext.packageManager
