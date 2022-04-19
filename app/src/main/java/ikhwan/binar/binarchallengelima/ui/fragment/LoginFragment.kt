@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +12,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
-import ikhwan.binar.binarchallengelima.ui.dialogfragment.LoginWaitFragment
+import ikhwan.binar.binarchallengelima.ui.dialogfragment.LoginWaitDialogFragment
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
-import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 
 class LoginFragment : Fragment(), View.OnClickListener {
@@ -96,7 +93,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
-            LoginWaitFragment().show(requireActivity().supportFragmentManager, null)
+            LoginWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
 
             viewModel.getAllUsers()
             viewModel.listUsers.observe(viewLifecycleOwner) {

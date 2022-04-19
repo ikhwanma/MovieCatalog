@@ -10,7 +10,7 @@ import ikhwan.binar.binarchallengelima.databinding.FragmentLoginWaitBinding
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
 
 
-class LoginWaitFragment : DialogFragment() {
+class LoginWaitDialogFragment : DialogFragment() {
 
     private var _binding : FragmentLoginWaitBinding? = null
     private val binding get() = _binding!!

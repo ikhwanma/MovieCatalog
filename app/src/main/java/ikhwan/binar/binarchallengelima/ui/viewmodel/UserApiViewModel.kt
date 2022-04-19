@@ -13,14 +13,14 @@ import retrofit2.Response
 class UserApiViewModel : ViewModel() {
 
     val user = MutableLiveData<GetUserResponseItem>()
-    val loginStatus = SingleLiveEvent<Boolean>()
     val updateStatus = MutableLiveData<Boolean?>()
-    val toastRegisterMessage = MutableLiveData<String>()
-    val toastLoginMessage = SingleLiveEvent<String>()
-
     val listUsers = SingleLiveEvent<List<GetUserResponseItem>>()
+
+    val toastRegisterMessage = SingleLiveEvent<String>()
+    val toastLoginMessage = SingleLiveEvent<String>()
+    val loginStatus = SingleLiveEvent<Boolean>()
+    val registerCheck = SingleLiveEvent<Boolean>()
     val loginCheck = SingleLiveEvent<Boolean>()
-    val registerStatus = SingleLiveEvent<Boolean>()
 
 
     fun getAllUsers() {
@@ -33,7 +33,7 @@ class UserApiViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         listUsers.postValue(response.body())
                         loginStatus.postValue(true)
-                    }else{
+                    } else {
                         loginStatus.postValue(false)
                         toastLoginMessage.postValue(response.message())
                     }
@@ -48,41 +48,21 @@ class UserApiViewModel : ViewModel() {
     }
 
     fun registerUser(user: PostUserResponse) {
-        var cek = false
-        val x = listUsers.value
-        for (data in x!!) {
-            if (user.email == data.email) {
-                cek = true
-            }
-        }
-        registerUserCek(cek, user)
-    }
+        ApiClient.userInstance.addUsers(user)
+            .enqueue(object : Callback<GetUserResponseItem> {
+                override fun onResponse(
+                    call: Call<GetUserResponseItem>,
+                    response: Response<GetUserResponseItem>
+                ) {
+                    if (!response.isSuccessful)
+                        toastRegisterMessage.postValue(response.message())
 
-    private fun registerUserCek(cek: Boolean, user: PostUserResponse) {
-        if (!cek) {
-            ApiClient.userInstance.addUsers(user)
-                .enqueue(object : Callback<GetUserResponseItem> {
-                    override fun onResponse(
-                        call: Call<GetUserResponseItem>,
-                        response: Response<GetUserResponseItem>
-                    ) {
-                        if (response.isSuccessful) {
-                            registerStatus.postValue(true)
-                        } else {
-                            registerStatus.postValue(false)
-                            toastRegisterMessage.postValue(response.message())
-                        }
-                    }
+                }
 
-                    override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
-                        registerStatus.postValue(false)
-                        toastRegisterMessage.postValue(t.message)
-                    }
-                })
-        } else {
-            toastRegisterMessage.postValue("User dengan email ${user.email} sudah terdaftar")
-            registerStatus.value = false
-        }
+                override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
+                    toastRegisterMessage.postValue(t.message)
+                }
+            })
     }
 
     fun updateUser(user: PostUserResponse, id: String) {
