@@ -13,12 +13,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
 import ikhwan.binar.binarchallengelima.ui.dialogfragment.LoginWaitFragment
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
+import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 
 class LoginFragment : Fragment(), View.OnClickListener {
@@ -60,8 +62,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btn_login -> {
-                viewModel.setLoginStatus(false)
-                LoginWaitFragment().show(requireActivity().supportFragmentManager, null)
+                viewModel.loginStatus.value = false
                 login(p0)
             }
             R.id.btn_register -> {
@@ -95,39 +96,44 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
+            LoginWaitFragment().show(requireActivity().supportFragmentManager, null)
+
             viewModel.getAllUsers()
-
             viewModel.listUsers.observe(viewLifecycleOwner) {
-                var cek = false
-                for (data in it) {
-                    if (email == data.email && password == data.password) {
-                        cek = true
-                        viewModel.setUser(data)
-                        viewModel.setLoginStatus(true)
-                        break
+                if (it != null) {
+                    for (data in it) {
+                        if (email == data.email && password == data.password) {
+                            viewModel.user.value = data
+                            viewModel.loginCheck.postValue(true)
+                            viewModel.loginStatus.postValue(true)
+                            break
+                        } else {
+                            viewModel.loginCheck.postValue(false)
+                            viewModel.loginStatus.postValue(true)
+                        }
                     }
                 }
-                try {
-                    if (cek) {
-                        val editor = sharedPreferences.edit()
-                        editor.putString(EMAIL, email)
-                        editor.apply()
-                        p0.findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Email atau Password salah",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } catch (e: IllegalArgumentException) {
-                    Log.d("failed", e.toString())
-                }
-
             }
 
+            viewModel.loginCheck.observe(viewLifecycleOwner) {
+                if (it) {
+                    val editor = sharedPreferences.edit()
+                    editor.putString(EMAIL, email)
+                    editor.apply()
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.action_loginFragment_to_homeFragment)
+                } else {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Email atau Password salah",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
+
 
     private fun inputCheck(email: String, password: String, cek: Boolean): Boolean {
         if (email.isEmpty() || password.isEmpty() || !cek

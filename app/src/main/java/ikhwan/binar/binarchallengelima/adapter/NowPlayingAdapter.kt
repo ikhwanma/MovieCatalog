@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemNowBinding
-import ikhwan.binar.binarchallengelima.model.nowplaying.GetNowPlayingResponse
 import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 
 class NowPlayingAdapter(val onItemClick: OnClickListener): RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {

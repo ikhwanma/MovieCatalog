@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemMovieLinearBinding
 import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 
-class MovieLinearAdapter(val onItemClick: MovieLinearAdapter.OnClickListener) :
+class MovieLinearAdapter(val onItemClick: OnClickListener) :
     RecyclerView.Adapter<MovieLinearAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemMovieLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {

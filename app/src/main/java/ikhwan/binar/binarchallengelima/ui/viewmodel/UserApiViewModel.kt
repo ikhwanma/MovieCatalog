@@ -1,10 +1,8 @@
 package ikhwan.binar.binarchallengelima.ui.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
+import ikhwan.binar.binarchallengelima.helper.SingleLiveEvent
 import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.network.ApiClient
@@ -12,102 +10,95 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserApiViewModel : ViewModel(){
+class UserApiViewModel : ViewModel() {
 
-    private val _listUsers = MutableLiveData<List<GetUserResponseItem>>()
-    val listUsers: LiveData<List<GetUserResponseItem>> = _listUsers
+    val user = MutableLiveData<GetUserResponseItem>()
+    val loginStatus = SingleLiveEvent<Boolean>()
+    val updateStatus = MutableLiveData<Boolean?>()
+    val toastRegisterMessage = MutableLiveData<String>()
+    val toastLoginMessage = SingleLiveEvent<String>()
 
-    private val _user = MutableLiveData<GetUserResponseItem>()
-    val user: LiveData<GetUserResponseItem> = _user
+    val listUsers = SingleLiveEvent<List<GetUserResponseItem>>()
+    val loginCheck = SingleLiveEvent<Boolean>()
+    val registerStatus = SingleLiveEvent<Boolean>()
 
-    fun setUser(user: GetUserResponseItem){
-        _user.postValue(user)
-    }
 
-    private val _toastRegisterMessage = MutableLiveData<String>()
-    val toastRegisterMessage: LiveData<String> = _toastRegisterMessage
-
-    private val _registerStatus = MutableLiveData<Boolean?>()
-    val registerStatus: LiveData<Boolean?> = _registerStatus
-
-    private val _loginStatus = MutableLiveData<Boolean>()
-    val loginStatus: LiveData<Boolean> = _loginStatus
-
-    fun setLoginStatus(status : Boolean){
-        _loginStatus.postValue(status)
-    }
-
-    private val _updateStatus = MutableLiveData<Boolean?>()
-    val updateStatus: LiveData<Boolean?> = _updateStatus
-
-    fun getAllUsers(){
+    fun getAllUsers() {
         ApiClient.userInstance.getAllUsers()
-            .enqueue(object :Callback<List<GetUserResponseItem>>{
+            .enqueue(object : Callback<List<GetUserResponseItem>> {
                 override fun onResponse(
                     call: Call<List<GetUserResponseItem>>,
                     response: Response<List<GetUserResponseItem>>
                 ) {
-                    if (response.isSuccessful){
-                        _listUsers.postValue(response.body())
+                    if (response.isSuccessful) {
+                        listUsers.postValue(response.body())
+                        loginStatus.postValue(true)
+                    }else{
+                        loginStatus.postValue(false)
+                        toastLoginMessage.postValue(response.message())
                     }
                 }
 
                 override fun onFailure(call: Call<List<GetUserResponseItem>>, t: Throwable) {
-
+                    loginStatus.postValue(false)
+                    toastLoginMessage.postValue(t.message)
                 }
 
             })
     }
 
-    fun registerUser(user : PostUserResponse){
-        _registerStatus.postValue(null)
-        var cek = true
+    fun registerUser(user: PostUserResponse) {
+        var cek = false
         val x = listUsers.value
-        for (data in x!!){
-            if (user.email == data.email){
-                cek = false
+        for (data in x!!) {
+            if (user.email == data.email) {
+                cek = true
             }
         }
-        if (cek){
+        registerUserCek(cek, user)
+    }
+
+    private fun registerUserCek(cek: Boolean, user: PostUserResponse) {
+        if (!cek) {
             ApiClient.userInstance.addUsers(user)
-                .enqueue(object : Callback<GetUserResponseItem>{
+                .enqueue(object : Callback<GetUserResponseItem> {
                     override fun onResponse(
                         call: Call<GetUserResponseItem>,
                         response: Response<GetUserResponseItem>
                     ) {
-                        if (response.isSuccessful){
-                            _registerStatus.postValue(true)
-                        }else{
-                            _registerStatus.postValue(false)
-                            _toastRegisterMessage.postValue(response.message())
+                        if (response.isSuccessful) {
+                            registerStatus.postValue(true)
+                        } else {
+                            registerStatus.postValue(false)
+                            toastRegisterMessage.postValue(response.message())
                         }
                     }
 
                     override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
-                        _registerStatus.postValue(false)
-                        _toastRegisterMessage.postValue(t.message)
+                        registerStatus.postValue(false)
+                        toastRegisterMessage.postValue(t.message)
                     }
                 })
-        }else{
-            _toastRegisterMessage.postValue("User dengan email ${user.email} sudah terdaftar")
-            _registerStatus.postValue(false)
+        } else {
+            toastRegisterMessage.postValue("User dengan email ${user.email} sudah terdaftar")
+            registerStatus.value = false
         }
     }
 
-    fun updateUser(user: PostUserResponse, id: String){
+    fun updateUser(user: PostUserResponse, id: String) {
         ApiClient.userInstance.updateUser(user, id)
-            .enqueue(object : Callback<GetUserResponseItem>{
+            .enqueue(object : Callback<GetUserResponseItem> {
                 override fun onResponse(
                     call: Call<GetUserResponseItem>,
                     response: Response<GetUserResponseItem>
                 ) {
-                    if (response.isSuccessful){
-                        _updateStatus.postValue(true)
+                    if (response.isSuccessful) {
+                        updateStatus.postValue(true)
                     }
                 }
 
                 override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
-                    _updateStatus.postValue(false)
+                    updateStatus.postValue(false)
                 }
 
             })

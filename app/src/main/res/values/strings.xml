@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">The Movie Database</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="masukkan_email">Masukkan Email</string>
     <string name="masukkan_password">Masukkan Password</string>
     <string name="login">Login</string>
@@ -10,26 +8,10 @@
     <string name="register">Register</string>
     <string name="masukkan_nama">Masukkan Nama</string>
     <string name="masukkan_konfirmasi_password">Masukkan Konfirmasi Password</string>
-    <string name="welcome">Welcome,</string>
-    <string name="logout">Logout</string>
-    <string name="float_add">Float Add</string>
-    <string name="input_data">Input Data</string>
-    <string name="masukkan_judul">Masukkan Judul</string>
-    <string name="masukkan_catatan">Masukkan Catatan</string>
-    <string name="input">Input</string>
-    <string name="title">Title</string>
-    <string name="note">Note</string>
-    <string name="edit">edit</string>
-    <string name="hapus_data">Hapus Data</string>
-    <string name="hapus">HAPUS</string>
-    <string name="cancel">CANCEL</string>
-    <string name="anda_belum_memiliki_note">Anda Belum Memiliki Note</string>
-    <string name="yakin_ingin_logout">Yakin ingin Logout?</string>
     <string name="see_password">see password</string>
     <string name="image">image</string>
     <string name="_0_0">0.0</string>
     <string name="movie_title">Movie Title</string>
-    <string name="release_date">Release Date</string>
     <string name="profile">Profile</string>
     <string name="genre">Genre</string>
     <string name="movie_name">Movie Name</string>
@@ -45,12 +27,14 @@
     <string name="masukkan_nama_lengkap">Masukkan Nama Lengkap</string>
     <string name="masukkan_tanggal_lahir">Masukkan Tanggal Lahir</string>
     <string name="update_user">Update User</string>
-    <string name="logging_in_please_wait">Logging In, Please Wait ...</string>
-    <string name="similiar_movie">Similiar Movie</string>
+    <string name="logging_in_please_wait">Logging In, Please Wait …</string>
+    <string name="similiar_movie">Similar Movie</string>
     <string name="email_can_t_be_edited">Email (can\'t be edited)</string>
     <string name="username">Username</string>
     <string name="nama_lengkap">Nama Lengkap</string>
     <string name="alamat">Alamat</string>
     <string name="password">Password</string>
     <string name="tanggal_lahir">Tanggal Lahir</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

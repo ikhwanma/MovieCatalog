@@ -16,8 +16,6 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentProfileBinding
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
-import java.time.LocalDate
-import java.time.Period
 import java.util.*
 
 
@@ -72,7 +70,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             DatePickerDialog(requireContext(), { _, i, i2, i3 ->
                 val now = c.get(Calendar.YEAR)
                 val age = now - i
-                val txtDate = "$i3/$i2/$i ($age y.o)"
+                val txtDate = "$i3/${i2+1}/$i ($age y.o)"
                 binding.inputDate.setText(txtDate)
             }, year, month, day).show()
         }

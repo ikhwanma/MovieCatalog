@@ -6,8 +6,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
-import android.widget.CompoundButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -20,7 +18,6 @@ import ikhwan.binar.binarchallengelima.adapter.MovieAdapter
 import ikhwan.binar.binarchallengelima.adapter.MovieLinearAdapter
 import ikhwan.binar.binarchallengelima.adapter.NowPlayingAdapter
 import ikhwan.binar.binarchallengelima.databinding.FragmentHomeBinding
-import ikhwan.binar.binarchallengelima.model.nowplaying.GetNowPlayingResponse
 import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.ui.viewmodel.ApiViewModel
@@ -50,14 +47,14 @@ class HomeFragment : Fragment() {
         userViewModel.listUsers.observe(viewLifecycleOwner){
             for (data in it){
                 if (email == data.email){
-                    userViewModel.setUser(data)
+                    userViewModel.user.value = data
                 }
             }
         }
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
         (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
-        userViewModel.user.observe(viewLifecycleOwner) {
-            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${it.username.replaceFirstChar {
+        userViewModel.user.observe(viewLifecycleOwner) { data ->
+            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${data.username.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
                     Locale.getDefault()
                 ) else it.toString()
@@ -69,8 +66,8 @@ class HomeFragment : Fragment() {
                 requireActivity().applicationContext.packageName,
                 PackageManager.GET_META_DATA
             )
-        val value = ai.metaData["apiKey"]
-        viewModel.setApiKey(value.toString())
+        val values = ai.metaData["apiKey"]
+        viewModel.apiKey.value = values.toString()
 
         return binding.root
     }
@@ -90,20 +87,21 @@ class HomeFragment : Fragment() {
             }else{
                 showList(it)
             }
-            binding.switchRv.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-                if (isChecked){
+            binding.switchRv.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
                     sharedPreferences.edit().putBoolean(CEK, true).apply()
-                    val navOptions = NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
+                    val navOptions =
+                        NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
                     Navigation.findNavController(view).navigate(R.id.homeFragment, null, navOptions)
                     showListLinear(it)
-                }else{
+                } else {
                     sharedPreferences.edit().putBoolean(CEK, false).apply()
                     showList(it)
                 }
-            })
+            }
         }
         viewModel.listNowData.observe(viewLifecycleOwner){
-            showListNowPlay(it.resultNows, it)
+            showListNowPlay(it.resultNows)
         }
 
         viewModel.isSuccess.observe(viewLifecycleOwner) {
@@ -118,7 +116,7 @@ class HomeFragment : Fragment() {
         binding.rvMovie.layoutManager = LinearLayoutManager(requireContext())
         val adapter = MovieLinearAdapter(object : MovieLinearAdapter.OnClickListener {
             override fun onClickItem(data: ResultMovie) {
-                viewModel.setId(data.id)
+                viewModel.id.postValue(data.id)
                 Navigation.findNavController(requireView())
                     .navigate(R.id.action_homeFragment_to_detailFragment)
             }
@@ -127,17 +125,31 @@ class HomeFragment : Fragment() {
         binding.rvMovie.adapter = adapter
     }
 
-    private fun showListNowPlay(it: List<ResultNow>?, getNowPlayingResponse: GetNowPlayingResponse) {
+    private fun showListNowPlay(it: List<ResultNow>?) {
         binding.rvNow.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         val adapter = NowPlayingAdapter(object : NowPlayingAdapter.OnClickListener{
             override fun onClickItem(data: ResultNow) {
-                viewModel.setId(data.id)
+                viewModel.id.postValue(data.id)
                 Navigation.findNavController(requireView())
                     .navigate(R.id.action_homeFragment_to_detailFragment)
             }
         })
         adapter.submitData(it)
         binding.rvNow.adapter = adapter
+    }
+
+    private fun showList(data: List<ResultMovie>?) {
+        binding.rvMovie.isNestedScrollingEnabled = false
+        binding.rvMovie.layoutManager = GridLayoutManager(requireContext(), 2)
+        val adapter = MovieAdapter(object : MovieAdapter.OnClickListener {
+            override fun onClickItem(data: ResultMovie) {
+                viewModel.id.postValue(data.id)
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_homeFragment_to_detailFragment)
+            }
+        })
+        adapter.submitData(data)
+        binding.rvMovie.adapter = adapter
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -157,19 +169,7 @@ class HomeFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun showList(data: List<ResultMovie>?) {
-        binding.rvMovie.isNestedScrollingEnabled = false
-        binding.rvMovie.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = MovieAdapter(object : MovieAdapter.OnClickListener {
-            override fun onClickItem(data: ResultMovie) {
-                viewModel.setId(data.id)
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_homeFragment_to_detailFragment)
-            }
-        })
-        adapter.submitData(data)
-        binding.rvMovie.adapter = adapter
-    }
+
 
 
     companion object{

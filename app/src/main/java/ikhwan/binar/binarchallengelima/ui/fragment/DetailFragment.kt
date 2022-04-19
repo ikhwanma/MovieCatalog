@@ -56,7 +56,7 @@ class DetailFragment : Fragment() {
         viewModel.id.observe(viewLifecycleOwner) { id ->
             viewModel.getData(id)
             viewModel.getCast(id)
-            viewModel.getSimiliar(id)
+            viewModel.getSimilar(id)
         }
 
         viewModel.data.observe(viewLifecycleOwner) {
@@ -106,16 +106,16 @@ class DetailFragment : Fragment() {
             showList(it.cast)
         }
 
-        viewModel.similiar.observe(viewLifecycleOwner){
-            showListSimiliar(it)
+        viewModel.similar.observe(viewLifecycleOwner){
+            showListSimilar(it)
         }
     }
 
-    private fun showListSimiliar(it: List<ResultMovie>?) {
+    private fun showListSimilar(it: List<ResultMovie>?) {
         binding.rvSimiliar.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         val adapter = SimiliarAdapter(object : SimiliarAdapter.OnClickListener{
             override fun onClickItem(data: ResultMovie) {
-                viewModel.setId(data.id)
+                viewModel.id.postValue(data.id)
                 Navigation.findNavController(requireView()).navigate(R.id.action_detailFragment_self)
             }
 

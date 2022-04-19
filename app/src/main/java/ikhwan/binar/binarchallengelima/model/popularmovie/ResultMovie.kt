@@ -1,11 +1,7 @@
 package ikhwan.binar.binarchallengelima.model.popularmovie
 
-
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class ResultMovie(
     @SerializedName("adult")
     val adult: Boolean,
@@ -35,4 +31,4 @@ data class ResultMovie(
     val voteAverage: Double,
     @SerializedName("vote_count")
     val voteCount: Int
-) : Parcelable
+)

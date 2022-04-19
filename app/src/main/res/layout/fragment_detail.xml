@@ -108,7 +108,8 @@
                     android:id="@+id/img_movie"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/image"/>
             </androidx.cardview.widget.CardView>
 
             <TextView

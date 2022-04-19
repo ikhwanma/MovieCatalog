@@ -3,7 +3,6 @@ package ikhwan.binar.binarchallengelima.ui.fragment
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +14,8 @@ import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.ui.dialogfragment.LoginWaitFragment
 import ikhwan.binar.binarchallengelima.ui.viewmodel.UserApiViewModel
-import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 
 class RegisterFragment : Fragment(), View.OnClickListener {
@@ -56,6 +55,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btn_register -> {
+                viewModel.toastRegisterMessage.postValue(null)
                 register()
             }
             R.id.btn_view_pass -> {
@@ -110,32 +110,32 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
     private fun registerUser(name: String, email: String, password: String) {
         val regUser = PostUserResponse("", "", email, "", password, name)
+        LoginWaitFragment().show(requireActivity().supportFragmentManager, null)
 
         if (inputCheck(name, email, password, cek)) {
             viewModel.registerUser(regUser)
-            viewModel.registerStatus.observe(this) {
-                try {
-                    if (it != null) {
-                        if (it) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Sukses mendaftarkan ${regUser.email}, silakan mencoba untuk login",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            Navigation.findNavController(requireView())
-                                .navigate(R.id.action_registerFragment_to_loginFragment)
-                        } else {
-                            viewModel.toastRegisterMessage.observe(this) {
-                                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+
+            viewModel.registerStatus.observe(viewLifecycleOwner){
+                if (it != null){
+                    if (it) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Sukses mendaftarkan ${binding.inputEmail.text}, silakan mencoba login",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Navigation.findNavController(requireView())
+                            .navigate(R.id.action_registerFragment_to_loginFragment)
+                    } else {
+                        viewModel.toastRegisterMessage.observe(requireActivity()) { data ->
+                            if (data != null) {
+                                Toast.makeText(requireContext(), data, Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }
-                } catch (e: IllegalArgumentException) {
-                    Log.d("fail", e.toString())
                 }
             }
         }
-
     }
 
 
