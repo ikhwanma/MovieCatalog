@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemCastBinding
 import ikhwan.binar.binarchallengelima.model.credit.Cast
+import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 
-class CastAdapter : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
+class CastAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemCastBinding):RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Cast){
             binding.apply {
@@ -19,6 +20,9 @@ class CastAdapter : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
                 tvName.text = data.name
                 tvCharacter.text = data.character
                 Glide.with(itemView).load(urlImage).into(imgCast)
+                root.setOnClickListener {
+                    onItemClick.onClickItem(data)
+                }
             }
         }
     }
@@ -51,5 +55,9 @@ class CastAdapter : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return differ.currentList.size
+    }
+
+    interface OnClickListener{
+        fun onClickItem(data: Cast)
     }
 }

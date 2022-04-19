@@ -18,6 +18,7 @@ import ikhwan.binar.binarchallengelima.adapter.SimiliarAdapter
 import ikhwan.binar.binarchallengelima.databinding.FragmentDetailBinding
 import ikhwan.binar.binarchallengelima.model.credit.Cast
 import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
+import ikhwan.binar.binarchallengelima.ui.dialogfragment.ShowImageDialogFragment
 import ikhwan.binar.binarchallengelima.ui.viewmodel.ApiViewModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 
@@ -78,6 +79,9 @@ class DetailFragment : Fragment() {
                     .apply(RequestOptions.bitmapTransform(BlurTransformation(10, 3)))
                     .into(imgBackgroundDetail)
                 Glide.with(view).load(imgUrl).into(imgMovie)
+                imgMovie.setOnClickListener {
+                    ShowImageDialogFragment(imgUrl).show(requireActivity().supportFragmentManager, null)
+                }
                 tvMovie.text = it.title
                 tvMovie.append(" (${date[0]})")
                 tvGenre.text = txtGenre
@@ -127,7 +131,15 @@ class DetailFragment : Fragment() {
     private fun showList(cast: List<Cast>) {
         binding.rvCast.layoutManager =
             LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        val adapter = CastAdapter()
+        val adapter = CastAdapter(object : CastAdapter.OnClickListener{
+            override fun onClickItem(data: Cast) {
+                val baseUrlImg = "https://image.tmdb.org/t/p/w500/"
+                val imgUrl = baseUrlImg + data.profilePath
+
+                ShowImageDialogFragment(imgUrl).show(requireActivity().supportFragmentManager, null)
+            }
+
+        })
         adapter.submitData(cast)
         binding.rvCast.adapter = adapter
     }
