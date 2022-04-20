@@ -39,6 +39,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Login"
+        (activity as AppCompatActivity?)!!.supportActionBar?.show()
         return binding.root
     }
 
@@ -48,7 +49,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
             requireActivity().getSharedPreferences(PREF_USER, Context.MODE_PRIVATE)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
 
         if (sharedPreferences.contains(EMAIL)) {
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
