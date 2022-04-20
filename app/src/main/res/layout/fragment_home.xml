@@ -57,11 +57,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_popular"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             android:layout_alignParentBottom="true"
             android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            tools:itemCount="2"
+            tools:itemCount="4"
             tools:listitem="@layout/item_movie" />
 
 

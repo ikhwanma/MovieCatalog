@@ -14,8 +14,8 @@ class UserApiViewModel : ViewModel() {
 
     val user = MutableLiveData<GetUserResponseItem>()
     val updateStatus = MutableLiveData<Boolean?>()
-    val listUsers = SingleLiveEvent<List<GetUserResponseItem>>()
 
+    val listUsers = SingleLiveEvent<List<GetUserResponseItem>>()
     val toastRegisterMessage = SingleLiveEvent<String>()
     val toastLoginMessage = SingleLiveEvent<String>()
     val loginStatus = SingleLiveEvent<Boolean>()
