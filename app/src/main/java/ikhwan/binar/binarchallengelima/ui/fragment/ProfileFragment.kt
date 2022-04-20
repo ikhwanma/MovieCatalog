@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -31,17 +33,18 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private val month = c.get(Calendar.MONTH)
     private val day = c.get(Calendar.DAY_OF_MONTH)
 
-    private lateinit var id : String
+    private lateinit var id: String
+    private var viewPass: Boolean = false
 
-    private val viewModel : UserApiViewModel by activityViewModels()
+    private val viewModel: UserApiViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Edit Profile"
 
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Edit Profile"
 
         return binding.root
     }
@@ -51,9 +54,10 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         setHasOptionsMenu(true)
         sharedPreferences =
             requireActivity().getSharedPreferences(LoginFragment.PREF_USER, Context.MODE_PRIVATE)
-        viewSharedPreferences = requireActivity().getSharedPreferences(HomeFragment.PREF_VIEW, Context.MODE_PRIVATE)
+        viewSharedPreferences =
+            requireActivity().getSharedPreferences(HomeFragment.PREF_VIEW, Context.MODE_PRIVATE)
 
-        viewModel.user.observe(viewLifecycleOwner){
+        viewModel.user.observe(viewLifecycleOwner) {
             binding.apply {
                 inputNama.setText(it.username)
                 inputAlamat.setText(it.address)
@@ -65,12 +69,60 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             this.id = it.id
         }
 
+        binding.btnViewPass.setOnClickListener(this)
         binding.btnUpdate.setOnClickListener(this)
-        binding.inputDate.setOnClickListener{
+        binding.inputDate.setOnClickListener {
             DatePickerDialog(requireContext(), { _, i, i2, i3 ->
                 val now = c.get(Calendar.YEAR)
                 val age = now - i
-                val txtDate = "$i3/${i2+1}/$i ($age y.o)"
+
+                val i3String = i3.toString()
+                val dd = if (i3String.length == 1) {
+                    "0$i3String"
+                } else {
+                    i3String
+                }
+                var mm = ""
+                when (i2) {
+                    0 -> {
+                        mm = "January"
+                    }
+                    1 -> {
+                        mm = "February"
+                    }
+                    2 -> {
+                        mm = "March"
+                    }
+                    3 -> {
+                        mm = "April"
+                    }
+                    4 -> {
+                        mm = "May"
+                    }
+                    5 -> {
+                        mm = "June"
+                    }
+                    6 -> {
+                        mm = "July"
+                    }
+                    7 -> {
+                        mm = "August"
+                    }
+                    8 -> {
+                        mm = "September"
+                    }
+                    9 -> {
+                        mm = "October"
+                    }
+                    10 -> {
+                        mm = "November"
+                    }
+                    11 -> {
+                        mm = "December"
+                    }
+                }
+
+                val txtDate = "$dd $mm $i ($age y.o)"
                 binding.inputDate.setText(txtDate)
             }, year, month, day).show()
         }
@@ -82,12 +134,17 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 AlertDialog.Builder(requireContext()).setTitle("Logout")
                     .setMessage("Yakin Ingin Logout?")
                     .setIcon(R.mipmap.ic_launcher_round)
-                    .setPositiveButton("Ya"){ _, _ ->
+                    .setPositiveButton("Ya") { _, _ ->
                         sharedPreferences.edit().clear().apply()
                         viewSharedPreferences.edit().clear().apply()
-                        val navOptions = NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
-                        Navigation.findNavController(requireView()).navigate(R.id.action_profileFragment_to_loginFragment,null, navOptions)
-                    }.setNegativeButton("Tidak"){ _, _ ->
+                        val navOptions =
+                            NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
+                        Navigation.findNavController(requireView()).navigate(
+                            R.id.action_profileFragment_to_loginFragment,
+                            null,
+                            navOptions
+                        )
+                    }.setNegativeButton("Tidak") { _, _ ->
 
                     }
                     .show()
@@ -108,6 +165,23 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             R.id.btn_update -> {
                 cekInput()
             }
+            R.id.btn_view_pass -> {
+                if (!viewPass) {
+                    binding.apply {
+                        btnViewPass.setImageResource(R.drawable.ic_green_eye_24)
+                        inputPassword.transformationMethod =
+                            HideReturnsTransformationMethod.getInstance()
+                    }
+                    viewPass = true
+                } else {
+                    binding.apply {
+                        btnViewPass.setImageResource(R.drawable.ic_outline_remove_green_eye_24)
+                        inputPassword.transformationMethod =
+                            PasswordTransformationMethod.getInstance()
+                    }
+                    viewPass = false
+                }
+            }
         }
     }
 
@@ -126,27 +200,27 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             password = inputPassword.text.toString()
             username = inputNama.text.toString()
 
-            if (username.isEmpty()){
+            if (username.isEmpty()) {
                 inputDate.error = "Username tidak boleh kosong"
                 return
             }
-            if (fullName.isEmpty()){
+            if (fullName.isEmpty()) {
                 inputFullName.error = "Nama lengkap tidak boleh kosong"
                 return
             }
-            if (address.isEmpty()){
+            if (address.isEmpty()) {
                 inputAlamat.error = "Alamat tidak boleh kosong"
                 return
             }
-            if (password.isEmpty()){
+            if (password.isEmpty()) {
                 inputPassword.error = "Password tidak boleh kosong"
                 return
             }
-            if (password.length < 6){
+            if (password.length < 6) {
                 inputPassword.error = "Password minimal 6 karakter"
                 return
             }
-            if (birthDate.isEmpty()){
+            if (birthDate.isEmpty()) {
                 inputDate.error = "Tanggal lahir tidak boleh kosong"
                 return
             }
@@ -157,11 +231,12 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     private fun updateUser(user: PostUserResponse) {
         viewModel.updateUser(user, id)
-        viewModel.updateStatus.observe(viewLifecycleOwner){
-            if (it!!){
+        viewModel.updateStatus.observe(viewLifecycleOwner) {
+            if (it!!) {
                 Toast.makeText(requireContext(), "Data diupdate", Toast.LENGTH_SHORT).show()
-                Navigation.findNavController(requireView()).navigate(R.id.action_profileFragment_to_homeFragment)
-            }else{
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_profileFragment_to_homeFragment)
+            } else {
                 Toast.makeText(requireContext(), "Data gagal diupdate", Toast.LENGTH_SHORT).show()
             }
         }

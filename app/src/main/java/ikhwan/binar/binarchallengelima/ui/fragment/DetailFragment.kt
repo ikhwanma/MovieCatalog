@@ -34,7 +34,9 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
+
         (activity as AppCompatActivity?)!!.supportActionBar?.hide()
+
         return binding.root
     }
 

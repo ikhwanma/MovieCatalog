@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemCastBinding
 import ikhwan.binar.binarchallengelima.model.credit.Cast
-import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 
 class CastAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemCastBinding):RecyclerView.ViewHolder(binding.root) {

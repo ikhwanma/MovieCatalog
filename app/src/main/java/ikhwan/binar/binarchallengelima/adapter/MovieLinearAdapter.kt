@@ -57,7 +57,7 @@ class MovieLinearAdapter(val onItemClick: OnClickListener) :
                         month = "Nov"
                     }
                     list[1] == "12" -> {
-                        month = "Des"
+                        month = "Dec"
                     }
                 }
                 val date = "$month $day, $year"

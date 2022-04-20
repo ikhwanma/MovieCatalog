@@ -39,6 +39,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
         sharedPreferences =
             requireActivity().getSharedPreferences(PREF_VIEW, Context.MODE_PRIVATE)
         userSharedPreferences = requireActivity().getSharedPreferences(LoginFragment.PREF_USER, Context.MODE_PRIVATE)
@@ -168,9 +169,6 @@ class HomeFragment : Fragment() {
         inflater.inflate(R.menu.option_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
-
-
-
 
     companion object{
         const val PREF_VIEW = "view_preference"

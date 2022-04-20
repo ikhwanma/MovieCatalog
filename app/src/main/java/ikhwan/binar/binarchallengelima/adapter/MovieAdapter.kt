@@ -56,7 +56,7 @@ class MovieAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<Movi
                         month = "Nov"
                     }
                     list[1] == "12" -> {
-                        month = "Des"
+                        month = "Dec"
                     }
                 }
                 val date = "$month $day, $year"

@@ -38,8 +38,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Login"
-        (activity as AppCompatActivity?)!!.supportActionBar?.show()
+
         return binding.root
     }
 
@@ -126,7 +127,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
                     Toast.makeText(
                         requireContext(),
-                        "Email atau Password salah",
+                        "Wrong email or password",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -140,20 +141,20 @@ class LoginFragment : Fragment(), View.OnClickListener {
         ) {
             if (email.isEmpty()) {
                 binding.apply {
-                    inputEmail.error = "Email Tidak Boleh Kosong"
+                    inputEmail.error = "Email can't be empty"
                     inputEmail.requestFocus()
                 }
 
             }
             if (password.isEmpty()) {
                 binding.apply {
-                    inputPassword.error = "Password Tidak Boleh Kosong"
+                    inputPassword.error = "Password can't be empty"
                     inputPassword.requestFocus()
                 }
             }
             if (!cek) {
                 binding.apply {
-                    inputEmail.error = "Email Tidak Sesuai Format"
+                    inputEmail.error = "Email can't be empty"
                     inputEmail.requestFocus()
                 }
             }

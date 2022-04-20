@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentSplashBinding
@@ -37,11 +36,11 @@ class SplashFragment : Fragment() {
             binding.imgLogo,
             PropertyValuesHolder.ofFloat("scaleX", 1.2f),
             PropertyValuesHolder.ofFloat("scaleY", 1.2f)
-        ).setDuration(2000).start()
+        ).setDuration(1500).start()
 
         Handler(Looper.getMainLooper()).postDelayed({
             Navigation.findNavController(view).navigate(R.id.action_splashFragment_to_loginFragment)
-        }, 3000)
+        }, 2000)
 
     }
 

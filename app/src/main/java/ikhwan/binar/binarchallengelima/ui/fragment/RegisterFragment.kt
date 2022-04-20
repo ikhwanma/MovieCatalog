@@ -3,7 +3,6 @@ package ikhwan.binar.binarchallengelima.ui.fragment
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,8 +40,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Register"
-        viewModel.getAllUsers()
+
         return binding.root
     }
 
@@ -121,13 +121,12 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         RegisterWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
 
         if (inputCheck(name, email, password, cek)) {
-            Log.d("listUser", listUser.toString())
 
             for (data in listUser) {
                 if (this.email == data.email) {
                     Toast.makeText(
                         requireContext(),
-                        "User dengan email ${binding.inputEmail.text}, sudah terdaftar",
+                        "Email has already used by another user",
                         Toast.LENGTH_SHORT
                     ).show()
                     return
@@ -142,7 +141,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             }
             Toast.makeText(
                 requireContext(),
-                "Sukses mendaftarkan ${binding.inputEmail.text}, silakan mencoba login",
+                "Register successful",
                 Toast.LENGTH_SHORT
             ).show()
             Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment)
@@ -156,39 +155,39 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         ) {
             if (name.isEmpty()) {
                 binding.apply {
-                    inputNama.error = "Username Tidak Boleh Kosong"
+                    inputNama.error = "Username can't be empty"
                     inputNama.requestFocus()
                 }
 
             }
             if (email.isEmpty()) {
                 binding.apply {
-                    inputEmail.error = "Email Tidak Boleh Kosong"
+                    inputEmail.error = "Email can't be empty"
                     inputEmail.requestFocus()
                 }
             }
             if (password.isEmpty()) {
                 binding.apply {
-                    inputPassword.error = "Password Tidak Boleh Kosong"
+                    inputPassword.error = "Password can't be empty"
                     inputPassword.requestFocus()
                 }
             }
             if (!cek) {
                 binding.apply {
-                    inputEmail.error = "Email Tidak Sesuai Format"
+                    inputEmail.error = "Incorrect email format"
                     inputEmail.requestFocus()
                 }
             }
             if (binding.inputKonfPassword.text.toString() != password) {
                 binding.apply {
-                    inputKonfPassword.error = "Password Tidak Sama"
+                    inputKonfPassword.error = "Wrong password"
                     inputKonfPassword.requestFocus()
                 }
 
             }
             if (password.length < 6) {
                 binding.apply {
-                    inputPassword.error = "Password minimal 6 karakter"
+                    inputPassword.error = "Minimum 6 characters"
                     inputPassword.requestFocus()
                 }
             }
