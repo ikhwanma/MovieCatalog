@@ -36,11 +36,11 @@ class SplashFragment : Fragment() {
             binding.imgLogo,
             PropertyValuesHolder.ofFloat("scaleX", 1.2f),
             PropertyValuesHolder.ofFloat("scaleY", 1.2f)
-        ).setDuration(1500).start()
+        ).setDuration(2000).start()
 
         Handler(Looper.getMainLooper()).postDelayed({
             Navigation.findNavController(view).navigate(R.id.action_splashFragment_to_loginFragment)
-        }, 2000)
+        }, 3000)
 
     }
 

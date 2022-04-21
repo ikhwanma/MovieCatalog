@@ -64,7 +64,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         when (p0?.id) {
             R.id.btn_login -> {
                 viewModel.loginStatus.value = false
-                login(p0)
+                login()
             }
             R.id.btn_register -> {
                 p0.findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -89,7 +89,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun login(p0: View) {
+    private fun login() {
         binding.apply {
             email = inputEmail.text.toString()
             password = inputPassword.text.toString()
