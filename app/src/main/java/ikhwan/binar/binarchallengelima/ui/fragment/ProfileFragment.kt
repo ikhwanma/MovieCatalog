@@ -201,27 +201,27 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             username = inputNama.text.toString()
 
             if (username.isEmpty()) {
-                inputDate.error = "Username tidak boleh kosong"
+                inputDate.error = "Username can't be empty"
                 return
             }
             if (fullName.isEmpty()) {
-                inputFullName.error = "Nama lengkap tidak boleh kosong"
+                inputFullName.error = "Nama lengkap can't be empty"
                 return
             }
             if (address.isEmpty()) {
-                inputAlamat.error = "Alamat tidak boleh kosong"
+                inputAlamat.error = "Alamat can't be empty"
                 return
             }
             if (password.isEmpty()) {
-                inputPassword.error = "Password tidak boleh kosong"
+                inputPassword.error = "Password can't be empty"
                 return
             }
             if (password.length < 6) {
-                inputPassword.error = "Password minimal 6 karakter"
+                inputPassword.error = "Minimum 6 characters"
                 return
             }
             if (birthDate.isEmpty()) {
-                inputDate.error = "Tanggal lahir tidak boleh kosong"
+                inputDate.error = "Tanggal lahir can't be empty"
                 return
             }
         }
