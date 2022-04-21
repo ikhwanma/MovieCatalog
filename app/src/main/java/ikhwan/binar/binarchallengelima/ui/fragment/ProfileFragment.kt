@@ -132,9 +132,9 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         return when (item.itemId) {
             R.id.logout -> {
                 AlertDialog.Builder(requireContext()).setTitle("Logout")
-                    .setMessage("Yakin Ingin Logout?")
+                    .setMessage("Are you sure?")
                     .setIcon(R.mipmap.ic_launcher_round)
-                    .setPositiveButton("Ya") { _, _ ->
+                    .setPositiveButton("Yes") { _, _ ->
                         sharedPreferences.edit().clear().apply()
                         viewSharedPreferences.edit().clear().apply()
                         val navOptions =
@@ -144,7 +144,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                             null,
                             navOptions
                         )
-                    }.setNegativeButton("Tidak") { _, _ ->
+                    }.setNegativeButton("No") { _, _ ->
 
                     }
                     .show()
