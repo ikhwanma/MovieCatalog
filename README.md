@@ -15,6 +15,22 @@ For example :
 ```
  TheMovieDBApi = 6dshjakdhau8291h
 ```
+### Another way to add your TMDB API Key:
+- Open AndroidManifest.xml
+- Search this line :
+```
+<meta-data
+            android:name = "apiKey"
+            android:value = "${TheMovieDBApi}"/>
+```
+- Edit android:value to your TMDB API Key
+<p>For example</p>
+
+```
+<meta-data
+            android:name = "apiKey"
+            android:value = "6dshjakdhau8291h"/>
+```
 
 ## Feature
 - Register and login for user
