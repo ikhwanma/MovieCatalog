@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.fragment.ProfileFragment"
+    tools:context=".view.fragment.ProfileFragment"
     android:paddingHorizontal="20dp"
     android:paddingVertical="10dp">
 

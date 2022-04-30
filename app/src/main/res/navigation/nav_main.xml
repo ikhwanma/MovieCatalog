@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="ikhwan.binar.binarchallengelima.ui.fragment.LoginFragment"
+        android:name="ikhwan.binar.binarchallengelima.view.fragment.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="ikhwan.binar.binarchallengelima.ui.fragment.RegisterFragment"
+        android:name="ikhwan.binar.binarchallengelima.view.fragment.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="ikhwan.binar.binarchallengelima.ui.fragment.HomeFragment"
+        android:name="ikhwan.binar.binarchallengelima.view.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="ikhwan.binar.binarchallengelima.ui.fragment.ProfileFragment"
+        android:name="ikhwan.binar.binarchallengelima.view.fragment.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -72,7 +72,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="ikhwan.binar.binarchallengelima.ui.fragment.DetailFragment"
+        android:name="ikhwan.binar.binarchallengelima.view.fragment.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" >
         <action
@@ -83,7 +83,7 @@
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
-        android:name="ikhwan.binar.binarchallengelima.ui.fragment.SplashFragment"
+        android:name="ikhwan.binar.binarchallengelima.view.fragment.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
