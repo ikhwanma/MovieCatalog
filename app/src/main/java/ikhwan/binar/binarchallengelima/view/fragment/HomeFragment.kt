@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,8 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
+import ikhwan.binar.binarchallengelima.data.model.users.GetUserResponseItem
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
 import ikhwan.binar.binarchallengelima.data.utils.Status
+import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.view.adapter.MovieAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.MovieLinearAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.NowPlayingAdapter
@@ -32,41 +36,53 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModelMovie : MovieApiViewModel
+    private lateinit var viewModelMovie: MovieApiViewModel
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var userSharedPreferences: SharedPreferences
-    private val userViewModel: UserApiViewModel by activityViewModels()
+    private lateinit var viewModelUser: UserApiViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
+        (activity as AppCompatActivity?)!!.supportActionBar?.show()
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
+        viewModelUser = ViewModelProvider(
+            requireActivity(),
+            ViewModelFactory(ApiHelper(ApiClient.userInstance))
+        )[UserApiViewModel::class.java]
         viewModelMovie = ViewModelProvider(
             requireActivity(),
             ViewModelFactory(ApiHelper(ApiClient.instance))
         )[MovieApiViewModel::class.java]
+
         sharedPreferences =
             requireActivity().getSharedPreferences(PREF_VIEW, Context.MODE_PRIVATE)
-        userSharedPreferences = requireActivity().getSharedPreferences(LoginFragment.PREF_USER, Context.MODE_PRIVATE)
+        userSharedPreferences =
+            requireActivity().getSharedPreferences(LoginFragment.PREF_USER, Context.MODE_PRIVATE)
         val email = userSharedPreferences.getString(LoginFragment.EMAIL, "")
-        userViewModel.getAllUsers()
-        userViewModel.listUsers.observe(viewLifecycleOwner){
-            for (data in it){
-                if (email == data.email){
-                    userViewModel.user.value = data
+        viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
+            when (it.status) {
+                SUCCESS -> {
+                    for (data in it.data!!) {
+                        if (email == data.email) {
+                            (activity as AppCompatActivity?)!!.supportActionBar?.title =
+                                "Welcome, ${
+                                    data.username.replaceFirstChar { userData ->
+                                        if (userData.isLowerCase()) userData.titlecase(
+                                            Locale.getDefault()
+                                        ) else userData.toString()
+                                    }
+                                }!"
+                            viewModelUser.user.postValue(data)
+                            break
+                        }
+                    }
                 }
+                ERROR -> Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                LOADING -> Log.d("loadingMsg", "Loading")
             }
-        }
-        (activity as AppCompatActivity?)!!.supportActionBar?.show()
-        (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
-        userViewModel.user.observe(viewLifecycleOwner) { data ->
-            (activity as AppCompatActivity?)!!.supportActionBar?.title = "Welcome, ${data.username.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            }}!"
         }
 
         val ai: ApplicationInfo = requireActivity().applicationContext.packageManager
@@ -87,20 +103,17 @@ class HomeFragment : Fragment() {
         val cek = sharedPreferences.getBoolean(CEK, false)
         binding.switchRv.isChecked = cek
 
-        viewModelMovie.getPopularMovie().observe(viewLifecycleOwner){
-            when(it.status){
-                Status.SUCCESS -> {
-                    if (cek){
+        viewModelMovie.getPopularMovie().observe(viewLifecycleOwner) {
+            when (it.status) {
+                SUCCESS -> {
+                    if (cek) {
                         showListLinear(it.data!!.resultMovies)
-                    }else{
+                    } else {
                         showList(it.data!!.resultMovies)
                     }
                     binding.switchRv.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
                             sharedPreferences.edit().putBoolean(CEK, true).apply()
-                            val navOptions =
-                                NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
-                            Navigation.findNavController(view).navigate(R.id.homeFragment, null, navOptions)
                             showListLinear(it.data.resultMovies)
                         } else {
                             sharedPreferences.edit().putBoolean(CEK, false).apply()
@@ -109,12 +122,24 @@ class HomeFragment : Fragment() {
                     }
                     binding.progressCircular.visibility = View.GONE
                 }
+                ERROR -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                LOADING -> {
+                    Log.d("loadingMsg", "Loading")
+                }
             }
         }
-        viewModelMovie.getNowPlaying().observe(viewLifecycleOwner){
-            when(it.status){
-                Status.SUCCESS -> {
+        viewModelMovie.getNowPlaying().observe(viewLifecycleOwner) {
+            when (it.status) {
+                SUCCESS -> {
                     showListNowPlay(it.data!!.resultNows)
+                }
+                ERROR -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                LOADING -> {
+                    Log.d("loadingMsg", "Loading")
                 }
             }
         }
@@ -134,8 +159,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun showListNowPlay(it: List<ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow>?) {
-        binding.rvNow.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val adapter = NowPlayingAdapter(object : NowPlayingAdapter.OnClickListener{
+        binding.rvNow.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val adapter = NowPlayingAdapter(object : NowPlayingAdapter.OnClickListener {
             override fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow) {
                 viewModelMovie.id.postValue(data.id)
                 Navigation.findNavController(requireView())
@@ -177,7 +203,7 @@ class HomeFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    companion object{
+    companion object {
         const val PREF_VIEW = "view_preference"
         const val CEK = "cek"
     }

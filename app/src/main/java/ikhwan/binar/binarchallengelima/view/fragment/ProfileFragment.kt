@@ -6,18 +6,25 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
+import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.databinding.FragmentProfileBinding
 import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.utils.Status
+import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
+import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import java.util.*
 
 
@@ -36,7 +43,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private lateinit var id: String
     private var viewPass: Boolean = false
 
-    private val viewModel: UserApiViewModel by activityViewModels()
+    private lateinit var viewModelUser: UserApiViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +52,10 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Edit Profile"
+        viewModelUser = ViewModelProvider(
+            requireActivity(),
+            ViewModelFactory(ApiHelper(ApiClient.userInstance))
+        )[UserApiViewModel::class.java]
 
         return binding.root
     }
@@ -57,7 +68,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         viewSharedPreferences =
             requireActivity().getSharedPreferences(HomeFragment.PREF_VIEW, Context.MODE_PRIVATE)
 
-        viewModel.user.observe(viewLifecycleOwner) {
+        viewModelUser.user.observe(viewLifecycleOwner) {
             binding.apply {
                 inputNama.setText(it.username)
                 inputAlamat.setText(it.address)
@@ -72,60 +83,64 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         binding.btnViewPass.setOnClickListener(this)
         binding.btnUpdate.setOnClickListener(this)
         binding.inputDate.setOnClickListener {
-            DatePickerDialog(requireContext(), { _, i, i2, i3 ->
-                val now = c.get(Calendar.YEAR)
-                val age = now - i
-
-                val i3String = i3.toString()
-                val dd = if (i3String.length == 1) {
-                    "0$i3String"
-                } else {
-                    i3String
-                }
-                var mm = ""
-                when (i2) {
-                    0 -> {
-                        mm = "January"
-                    }
-                    1 -> {
-                        mm = "February"
-                    }
-                    2 -> {
-                        mm = "March"
-                    }
-                    3 -> {
-                        mm = "April"
-                    }
-                    4 -> {
-                        mm = "May"
-                    }
-                    5 -> {
-                        mm = "June"
-                    }
-                    6 -> {
-                        mm = "July"
-                    }
-                    7 -> {
-                        mm = "August"
-                    }
-                    8 -> {
-                        mm = "September"
-                    }
-                    9 -> {
-                        mm = "October"
-                    }
-                    10 -> {
-                        mm = "November"
-                    }
-                    11 -> {
-                        mm = "December"
-                    }
-                }
-
-                val txtDate = "$dd $mm $i ($age y.o)"
-                binding.inputDate.setText(txtDate)
-            }, year, month, day).show()
+            openDatePicker()
         }
+    }
+
+    private fun openDatePicker() {
+        DatePickerDialog(requireContext(), { _, i, i2, i3 ->
+            val now = c.get(Calendar.YEAR)
+            val age = now - i
+
+            val i3String = i3.toString()
+            val dd = if (i3String.length == 1) {
+                "0$i3String"
+            } else {
+                i3String
+            }
+            var mm = ""
+            when (i2) {
+                0 -> {
+                    mm = "January"
+                }
+                1 -> {
+                    mm = "February"
+                }
+                2 -> {
+                    mm = "March"
+                }
+                3 -> {
+                    mm = "April"
+                }
+                4 -> {
+                    mm = "May"
+                }
+                5 -> {
+                    mm = "June"
+                }
+                6 -> {
+                    mm = "July"
+                }
+                7 -> {
+                    mm = "August"
+                }
+                8 -> {
+                    mm = "September"
+                }
+                9 -> {
+                    mm = "October"
+                }
+                10 -> {
+                    mm = "November"
+                }
+                11 -> {
+                    mm = "December"
+                }
+            }
+
+            val txtDate = "$dd $mm $i ($age y.o)"
+            binding.inputDate.setText(txtDate)
+        }, year, month, day).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -225,7 +240,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 return
             }
         }
-        val user = ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse(
+        val user = PostUserResponse(
             address,
             birthDate,
             email,
@@ -236,15 +251,20 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         updateUser(user)
     }
 
-    private fun updateUser(user: ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse) {
-        viewModel.updateUser(user, id)
-        viewModel.updateStatus.observe(viewLifecycleOwner) {
-            if (it!!) {
-                Toast.makeText(requireContext(), "Data diupdate", Toast.LENGTH_SHORT).show()
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_profileFragment_to_homeFragment)
-            } else {
-                Toast.makeText(requireContext(), "Data gagal diupdate", Toast.LENGTH_SHORT).show()
+    private fun updateUser(user: PostUserResponse) {
+        viewModelUser.updateUser(user, id).observe(viewLifecycleOwner){
+            when(it.status){
+                SUCCESS -> {
+                    Toast.makeText(requireContext(), "Data Updated", Toast.LENGTH_SHORT).show()
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.action_profileFragment_to_homeFragment)
+                }
+                ERROR -> {
+                    Log.d("loadingMsg", it.message.toString())
+                }
+                LOADING -> {
+                    Log.d("loadingMsg", "Loading")
+                }
             }
         }
     }

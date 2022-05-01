@@ -2,84 +2,45 @@ package ikhwan.binar.binarchallengelima.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ikhwan.binar.binarchallengelima.data.utils.SingleLiveEvent
+import androidx.lifecycle.liveData
 import ikhwan.binar.binarchallengelima.data.model.users.GetUserResponseItem
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.data.utils.MainRepository
+import ikhwan.binar.binarchallengelima.data.utils.Resource
+import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 
-class UserApiViewModel : ViewModel() {
+class UserApiViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
     val user = MutableLiveData<GetUserResponseItem>()
-    val updateStatus = MutableLiveData<Boolean?>()
-
-    val listUsers =
-        SingleLiveEvent<List<GetUserResponseItem>>()
-    val toastRegisterMessage = SingleLiveEvent<String>()
-    val toastLoginMessage = SingleLiveEvent<String>()
-    val loginStatus = SingleLiveEvent<Boolean>()
-    val registerCheck = SingleLiveEvent<Boolean>()
-    val loginCheck = SingleLiveEvent<Boolean>()
+    val loginStatus = MutableLiveData<Boolean>()
+    val registerCheck = MutableLiveData<Boolean>()
 
 
-    fun getAllUsers() {
-        ikhwan.binar.binarchallengelima.data.network.ApiClient.userInstance.getAllUsers()
-            .enqueue(object : Callback<List<GetUserResponseItem>> {
-                override fun onResponse(
-                    call: Call<List<GetUserResponseItem>>,
-                    response: Response<List<GetUserResponseItem>>
-                ) {
-                    if (response.isSuccessful) {
-                        listUsers.postValue(response.body())
-                        loginStatus.postValue(true)
-                    } else {
-                        loginStatus.postValue(false)
-                        toastLoginMessage.postValue(response.message())
-                    }
-                }
-
-                override fun onFailure(call: Call<List<GetUserResponseItem>>, t: Throwable) {
-                    loginStatus.postValue(false)
-                    toastLoginMessage.postValue(t.message)
-                }
-
-            })
+    fun getAllUsers() = liveData(Dispatchers.IO){
+        emit(Resource.loading(null))
+        try {
+            emit(Resource.success(mainRepository.getAllUsers()))
+        }catch (e: Exception){
+            emit(Resource.error(data = null, message = e.message?:"Error Occured!"))
+        }
     }
 
-    fun registerUser(user: ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse) {
-        ikhwan.binar.binarchallengelima.data.network.ApiClient.userInstance.addUsers(user)
-            .enqueue(object : Callback<GetUserResponseItem> {
-                override fun onResponse(
-                    call: Call<GetUserResponseItem>,
-                    response: Response<GetUserResponseItem>
-                ) {
-                    if (!response.isSuccessful)
-                        toastRegisterMessage.postValue(response.message())
-
-                }
-
-                override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
-                    toastRegisterMessage.postValue(t.message)
-                }
-            })
+    fun registerUser(user: PostUserResponse) = liveData(Dispatchers.IO){
+        emit(Resource.loading(null))
+        try {
+            emit(Resource.success(mainRepository.addUsers(user)))
+        }catch (e: Exception){
+            emit(Resource.error(data = null, message = e.message?:"Error Occured!"))
+        }
     }
 
-    fun updateUser(user: ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse, id: String) {
-        ikhwan.binar.binarchallengelima.data.network.ApiClient.userInstance.updateUser(user, id)
-            .enqueue(object : Callback<GetUserResponseItem> {
-                override fun onResponse(
-                    call: Call<GetUserResponseItem>,
-                    response: Response<GetUserResponseItem>
-                ) {
-                    if (response.isSuccessful) {
-                        updateStatus.postValue(true)
-                    }
-                }
-
-                override fun onFailure(call: Call<GetUserResponseItem>, t: Throwable) {
-                    updateStatus.postValue(false)
-                }
-
-            })
+    fun updateUser(user: PostUserResponse, id: String) = liveData(Dispatchers.IO){
+        emit(Resource.loading(null))
+        try {
+            emit(Resource.success(mainRepository.updateUser(user, id)))
+        }catch (e: Exception){
+            emit(Resource.error(data = null, message = e.message?:"Error Occured!"))
+        }
     }
 }

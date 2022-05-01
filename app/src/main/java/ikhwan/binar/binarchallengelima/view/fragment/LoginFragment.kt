@@ -13,12 +13,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
+import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
+import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
 import ikhwan.binar.binarchallengelima.view.dialogfragment.LoginWaitDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
+import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import java.util.regex.Pattern
 
 class LoginFragment : Fragment(), View.OnClickListener {
@@ -26,7 +31,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedPreferences: SharedPreferences
-    private val viewModel: UserApiViewModel by activityViewModels()
+    private lateinit var viewModelUser : UserApiViewModel
 
     private lateinit var email: String
     private lateinit var password: String
@@ -40,6 +45,10 @@ class LoginFragment : Fragment(), View.OnClickListener {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Login"
+        viewModelUser = ViewModelProvider(
+            requireActivity(),
+            ViewModelFactory(ApiHelper(ApiClient.userInstance))
+        )[UserApiViewModel::class.java]
 
         return binding.root
     }
@@ -63,7 +72,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btn_login -> {
-                viewModel.loginStatus.value = false
                 login()
             }
             R.id.btn_register -> {
@@ -97,39 +105,32 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
-            LoginWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
-
-            viewModel.getAllUsers()
-            viewModel.listUsers.observe(viewLifecycleOwner) {
-                if (it != null) {
-                    for (data in it) {
-                        if (email == data.email && password == data.password) {
-                            viewModel.user.value = data
-                            viewModel.loginCheck.postValue(true)
-                            viewModel.loginStatus.postValue(true)
-                            break
-                        } else {
-                            viewModel.loginCheck.postValue(false)
-                            viewModel.loginStatus.postValue(true)
+            viewModelUser.getAllUsers().observe(viewLifecycleOwner){
+                when(it.status){
+                    Status.SUCCESS -> {
+                        viewModelUser.loginStatus.postValue(true)
+                        if (it.data != null) {
+                            for (data in it.data) {
+                                if (email == data.email && password == data.password) {
+                                    val editor = sharedPreferences.edit()
+                                    editor.putString(EMAIL, email)
+                                    editor.apply()
+                                    Navigation.findNavController(requireView())
+                                        .navigate(R.id.action_loginFragment_to_homeFragment)
+                                    break
+                                } else {
+                                    Toast.makeText(requireContext(), "Email atau Password Salah", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     }
-                }
-            }
-
-            viewModel.loginCheck.observe(viewLifecycleOwner) {
-                if (it) {
-                    val editor = sharedPreferences.edit()
-                    editor.putString(EMAIL, email)
-                    editor.apply()
-                    Navigation.findNavController(requireView())
-                        .navigate(R.id.action_loginFragment_to_homeFragment)
-                } else {
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Wrong email or password",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Status.LOADING -> {
+                        LoginWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
+                    }
+                    Status.ERROR ->{
+                        viewModelUser.loginStatus.postValue(true)
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

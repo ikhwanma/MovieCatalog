@@ -11,6 +11,9 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.New
         if (modelClass.isAssignableFrom(MovieApiViewModel::class.java)){
             return MovieApiViewModel(MainRepository(apiHelper)) as T
         }
+        if(modelClass.isAssignableFrom(UserApiViewModel::class.java)){
+            return UserApiViewModel(MainRepository(apiHelper)) as T
+        }
         throw IllegalArgumentException("Unknown class name")
     }
 }

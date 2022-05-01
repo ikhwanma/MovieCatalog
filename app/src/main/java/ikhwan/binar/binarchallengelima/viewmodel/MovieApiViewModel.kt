@@ -20,12 +20,8 @@ import java.lang.Exception
 class MovieApiViewModel(private val mainRepository: MainRepository) : ViewModel() {
     val apiKey = MutableLiveData<String>()
 
-    val isSuccess = MutableLiveData<Boolean>()
     val id = MutableLiveData<Int>()
     val data = MutableLiveData<GetDetailMovieResponse>()
-    val cast = MutableLiveData<GetCreditResponse>()
-    val similar = MutableLiveData<List<ResultMovie>>()
-    val detailFailMessage = MutableLiveData<String?>()
 
     fun getPopularMovie() = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))
@@ -72,27 +68,4 @@ class MovieApiViewModel(private val mainRepository: MainRepository) : ViewModel(
         }
     }
 
-
-    fun getSimilar(id: Int){
-        /*detailFailMessage.postValue(null)
-        ApiClient.instance.getSimiliarMovie(id, apiKey.value!!)
-            .enqueue(object : Callback<GetPopularMovieResponse>{
-                override fun onResponse(
-                    call: Call<GetPopularMovieResponse>,
-                    response: Response<GetPopularMovieResponse>
-                ) {
-                    if (response.isSuccessful){
-                        val body = response.body()
-                        similar.postValue(body?.resultMovies)
-                    }else{
-                        detailFailMessage.postValue(response.message())
-                    }
-                }
-
-                override fun onFailure(call: Call<GetPopularMovieResponse>, t: Throwable) {
-                    detailFailMessage.postValue(t.message)
-                }
-
-            })*/
-    }
 }

@@ -44,15 +44,15 @@ interface ApiService {
 
     //=====================User========================
     @GET("/users")
-    fun getAllUsers() : Call<List<GetUserResponseItem>>
+    suspend fun getAllUsers() : List<GetUserResponseItem>
 
     @POST("/users")
-    fun addUsers(
+    suspend fun addUsers(
         @Body user : PostUserResponse
-    ): Call<GetUserResponseItem>
+    ): GetUserResponseItem
 
     @PUT("/users/{id}")
-    fun updateUser(
+    suspend fun updateUser(
         @Body user : PostUserResponse, @Path("id") id:String
-    ) : Call<GetUserResponseItem>
+    ) : GetUserResponseItem
 }
