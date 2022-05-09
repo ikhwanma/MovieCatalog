@@ -1,21 +1,50 @@
 package ikhwan.binar.binarchallengelima.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import ikhwan.binar.binarchallengelima.data.model.users.GetUserResponseItem
-import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
+import androidx.lifecycle.*
+import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
+import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
+import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.data.utils.MainRepository
 import ikhwan.binar.binarchallengelima.data.utils.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class UserApiViewModel(private val mainRepository: MainRepository) : ViewModel() {
+class UserApiViewModel(private val mainRepository: MainRepository, private val pref: DataStoreManager) : ViewModel() {
 
     val user = MutableLiveData<GetUserResponseItem>()
     val loginStatus = MutableLiveData<Boolean>()
     val registerCheck = MutableLiveData<Boolean>()
 
+    fun setEmail(email : String){
+        viewModelScope.launch {
+            pref.setUser(email)
+        }
+    }
+
+    fun getEmail() : LiveData<String>{
+        return pref.getUser().asLiveData()
+    }
+
+    fun setImage(img: String){
+        viewModelScope.launch {
+            pref.setImageCamera(img)
+        }
+    }
+
+    fun getImage() : LiveData<String>{
+        return pref.getImage().asLiveData()
+    }
+
+    fun setImageGallery(img: String){
+        viewModelScope.launch {
+            pref.setImageGallery(img)
+        }
+    }
+
+    fun getImageGallery(): LiveData<String>{
+        return pref.getImageGallery().asLiveData()
+    }
 
     fun getAllUsers() = liveData(Dispatchers.IO){
         emit(Resource.loading(null))

@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemCastBinding
-import ikhwan.binar.binarchallengelima.data.model.credit.Cast
+import ikhwan.binar.binarchallengelima.model.credit.Cast
 
 class CastAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<CastAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemCastBinding):RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: ikhwan.binar.binarchallengelima.data.model.credit.Cast){
+        fun bind(data: Cast){
             binding.apply {
                 val baseUrlImg = "https://image.tmdb.org/t/p/w500/"
                 val urlImage = baseUrlImg + data.profilePath
@@ -26,18 +26,18 @@ class CastAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<CastA
         }
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<ikhwan.binar.binarchallengelima.data.model.credit.Cast>(){
-        override fun areItemsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.credit.Cast, newItem: ikhwan.binar.binarchallengelima.data.model.credit.Cast): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<Cast>(){
+        override fun areItemsTheSame(oldItem: Cast, newItem: Cast): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.credit.Cast, newItem: ikhwan.binar.binarchallengelima.data.model.credit.Cast): Boolean {
+        override fun areContentsTheSame(oldItem: Cast, newItem: Cast): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitData(value: List<ikhwan.binar.binarchallengelima.data.model.credit.Cast>?) = differ.submitList(value)
+    fun submitData(value: List<Cast>?) = differ.submitList(value)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -57,6 +57,6 @@ class CastAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<CastA
     }
 
     interface OnClickListener{
-        fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.credit.Cast)
+        fun onClickItem(data: Cast)
     }
 }

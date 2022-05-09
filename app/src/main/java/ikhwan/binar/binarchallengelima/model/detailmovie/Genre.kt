@@ -1,4 +1,4 @@
-package ikhwan.binar.binarchallengelima.data.model.detailmovie
+package ikhwan.binar.binarchallengelima.model.detailmovie
 
 
 import com.google.gson.annotations.SerializedName

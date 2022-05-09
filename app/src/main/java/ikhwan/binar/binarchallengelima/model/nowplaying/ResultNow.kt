@@ -1,5 +1,4 @@
-package ikhwan.binar.binarchallengelima.data.model.nowplaying
-
+package ikhwan.binar.binarchallengelima.model.nowplaying
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,13 +1,11 @@
 package ikhwan.binar.binarchallengelima.data.network
 
-import ikhwan.binar.binarchallengelima.data.model.credit.GetCreditResponse
-import ikhwan.binar.binarchallengelima.data.model.detailmovie.GetDetailMovieResponse
-import ikhwan.binar.binarchallengelima.data.model.nowplaying.GetNowPlayingResponse
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.GetPopularMovieResponse
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie
-import ikhwan.binar.binarchallengelima.data.model.users.GetUserResponseItem
-import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
-import retrofit2.Call
+import ikhwan.binar.binarchallengelima.model.credit.GetCreditResponse
+import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
+import ikhwan.binar.binarchallengelima.model.nowplaying.GetNowPlayingResponse
+import ikhwan.binar.binarchallengelima.model.popularmovie.GetPopularMovieResponse
+import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
+import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import retrofit2.http.*
 
 interface ApiService {

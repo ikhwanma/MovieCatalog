@@ -3,8 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.325" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.325" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable/ic_blue_edit_24.xml" value="0.325" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.196" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.196" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.196" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/activity_home.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/activity_main_tes.xml" value="0.2513586956521739" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/fragment_edit_profile.xml" value="0.33" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/fragment_login_wait.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/fragment_profile.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/fragment_splash.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/layout/item_cast.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/menu/bottom_nav_menu.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/menu/option_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeEnam/app/src/main/res/menu/profile_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable-v24/ic_green_eye_24.xml" value="0.2795" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/BinarChallengeLima/app/src/main/res/drawable-v24/ic_outline_remove_green_eye_24.xml" value="0.2795" />

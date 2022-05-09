@@ -1,4 +1,4 @@
-package ikhwan.binar.binarchallengelima.data.model.credit
+package ikhwan.binar.binarchallengelima.model.credit
 
 
 import com.google.gson.annotations.SerializedName

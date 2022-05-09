@@ -9,20 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import ikhwan.binar.binarchallengelima.R
+import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.model.detailmovie.GetDetailMovieResponse
+import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
 import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.view.adapter.CastAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.SimiliarAdapter
 import ikhwan.binar.binarchallengelima.databinding.FragmentDetailBinding
+import ikhwan.binar.binarchallengelima.model.credit.Cast
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.view.dialogfragment.ShowImageDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
@@ -34,6 +36,7 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModelMovie: MovieApiViewModel
+    private lateinit var pref: DataStoreManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +45,13 @@ class DetailFragment : Fragment() {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.hide()
+
+
+        pref = DataStoreManager(requireContext())
+
         viewModelMovie = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.instance))
+            ViewModelFactory(ApiHelper(ApiClient.instance), pref)
         )[MovieApiViewModel::class.java]
 
         return binding.root
@@ -145,10 +152,10 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun showListSimilar(it: List<ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie>?) {
+    private fun showListSimilar(it: List<ResultMovie>?) {
         binding.rvSimiliar.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         val adapter = SimiliarAdapter(object : SimiliarAdapter.OnClickListener{
-            override fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie) {
+            override fun onClickItem(data: ResultMovie) {
                 viewModelMovie.id.postValue(data.id)
                 Navigation.findNavController(requireView()).navigate(R.id.action_detailFragment_self)
             }
@@ -158,11 +165,11 @@ class DetailFragment : Fragment() {
         binding.rvSimiliar.adapter = adapter
     }
 
-    private fun showList(cast: List<ikhwan.binar.binarchallengelima.data.model.credit.Cast>) {
+    private fun showList(cast: List<Cast>) {
         binding.rvCast.layoutManager =
             LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         val adapter = CastAdapter(object : CastAdapter.OnClickListener{
-            override fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.credit.Cast) {
+            override fun onClickItem(data: Cast) {
                 val baseUrlImg = "https://image.tmdb.org/t/p/w500/"
                 val imgUrl = baseUrlImg + data.profilePath
 

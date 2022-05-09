@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemMovieLinearBinding
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 
 class MovieLinearAdapter(val onItemClick: OnClickListener) :
     RecyclerView.Adapter<MovieLinearAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemMovieLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie) {
+        fun bind(data: ResultMovie) {
             if (data.releaseDate != "") {
                 val list = data.releaseDate.split("-").toTypedArray()
                 val day = list[2]
@@ -91,19 +91,19 @@ class MovieLinearAdapter(val onItemClick: OnClickListener) :
         }
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie>() {
-        override fun areItemsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie, newItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<ResultMovie>() {
+        override fun areItemsTheSame(oldItem: ResultMovie, newItem: ResultMovie): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie, newItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie): Boolean {
+        override fun areContentsTheSame(oldItem: ResultMovie, newItem: ResultMovie): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitData(value: List<ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie>?) = differ.submitList(value)
+    fun submitData(value: List<ResultMovie>?) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -122,6 +122,6 @@ class MovieLinearAdapter(val onItemClick: OnClickListener) :
     }
 
     interface OnClickListener{
-        fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie)
+        fun onClickItem(data: ResultMovie)
     }
 }

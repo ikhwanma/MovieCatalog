@@ -1,27 +1,29 @@
 package ikhwan.binar.binarchallengelima.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import ikhwan.binar.binarchallengelima.data.model.credit.GetCreditResponse
-import ikhwan.binar.binarchallengelima.data.model.detailmovie.GetDetailMovieResponse
-import ikhwan.binar.binarchallengelima.data.model.nowplaying.GetNowPlayingResponse
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.GetPopularMovieResponse
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import androidx.lifecycle.*
+import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
+import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
 import ikhwan.binar.binarchallengelima.data.utils.MainRepository
 import ikhwan.binar.binarchallengelima.data.utils.Resource
 import kotlinx.coroutines.Dispatchers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class MovieApiViewModel(private val mainRepository: MainRepository) : ViewModel() {
+class MovieApiViewModel(private val mainRepository: MainRepository, private val pref: DataStoreManager) : ViewModel() {
     val apiKey = MutableLiveData<String>()
 
     val id = MutableLiveData<Int>()
     val data = MutableLiveData<GetDetailMovieResponse>()
+
+    fun setBoolean(boolean: Boolean){
+        viewModelScope.launch {
+            pref.setViewHome(boolean)
+        }
+    }
+
+    fun getBoolean() : LiveData<Boolean>{
+        return pref.getBoolean().asLiveData()
+    }
 
     fun getPopularMovie() = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))

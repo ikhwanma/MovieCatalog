@@ -1,4 +1,4 @@
-package ikhwan.binar.binarchallengelima.data.model.detailmovie
+package ikhwan.binar.binarchallengelima.model.detailmovie
 
 
 import com.google.gson.annotations.SerializedName
@@ -9,11 +9,11 @@ data class GetDetailMovieResponse(
     @SerializedName("backdrop_path")
     val backdropPath: String,
     @SerializedName("belongs_to_collection")
-    val belongsToCollection: ikhwan.binar.binarchallengelima.data.model.detailmovie.BelongsToCollection,
+    val belongsToCollection: BelongsToCollection,
     @SerializedName("budget")
     val budget: Int,
     @SerializedName("genres")
-    val genres: List<ikhwan.binar.binarchallengelima.data.model.detailmovie.Genre>,
+    val genres: List<Genre>,
     @SerializedName("homepage")
     val homepage: String,
     @SerializedName("id")
@@ -31,9 +31,9 @@ data class GetDetailMovieResponse(
     @SerializedName("poster_path")
     val posterPath: String,
     @SerializedName("production_companies")
-    val productionCompanies: List<ikhwan.binar.binarchallengelima.data.model.detailmovie.ProductionCompany>,
+    val productionCompanies: List<ProductionCompany>,
     @SerializedName("production_countries")
-    val productionCountries: List<ikhwan.binar.binarchallengelima.data.model.detailmovie.ProductionCountry>,
+    val productionCountries: List<ProductionCountry>,
     @SerializedName("release_date")
     val releaseDate: String,
     @SerializedName("revenue")
@@ -41,7 +41,7 @@ data class GetDetailMovieResponse(
     @SerializedName("runtime")
     val runtime: Int,
     @SerializedName("spoken_languages")
-    val spokenLanguages: List<ikhwan.binar.binarchallengelima.data.model.detailmovie.SpokenLanguage>,
+    val spokenLanguages: List<SpokenLanguage>,
     @SerializedName("status")
     val status: String,
     @SerializedName("tagline")

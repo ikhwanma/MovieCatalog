@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemNowBinding
-import ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow
+import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 
 class NowPlayingAdapter(val onItemClick: OnClickListener): RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemNowBinding) :
         RecyclerView.ViewHolder(binding.root){
-        fun bind(data: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow) {
+        fun bind(data: ResultNow) {
             if (data.releaseDate != "") {
                 val list = data.releaseDate.split("-").toTypedArray()
                 val day = list[2]
@@ -90,12 +90,12 @@ class NowPlayingAdapter(val onItemClick: OnClickListener): RecyclerView.Adapter<
         }
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow>(){
-        override fun areItemsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow, newItem: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<ResultNow>(){
+        override fun areItemsTheSame(oldItem: ResultNow, newItem: ResultNow): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow, newItem: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow): Boolean {
+        override fun areContentsTheSame(oldItem: ResultNow, newItem: ResultNow): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -103,7 +103,7 @@ class NowPlayingAdapter(val onItemClick: OnClickListener): RecyclerView.Adapter<
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitData(value: List<ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow>?) = differ.submitList(value)
+    fun submitData(value: List<ResultNow>?) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -123,6 +123,6 @@ class NowPlayingAdapter(val onItemClick: OnClickListener): RecyclerView.Adapter<
     }
 
     interface OnClickListener{
-        fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.nowplaying.ResultNow)
+        fun onClickItem(data: ResultNow)
     }
 }

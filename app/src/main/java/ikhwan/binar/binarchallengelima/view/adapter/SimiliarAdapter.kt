@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemSimiliarBinding
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 
 class SimiliarAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<SimiliarAdapter.ViewHolder>(){
     inner class ViewHolder(private val binding: ItemSimiliarBinding):RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie){
+        fun bind(data: ResultMovie){
             binding.apply {
                 val baseUrlImg = "https://image.tmdb.org/t/p/w500/"
                 val urlImage = baseUrlImg + data.backdropPath
@@ -25,12 +25,12 @@ class SimiliarAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<S
             }
         }
     }
-    private val diffCallback = object : DiffUtil.ItemCallback<ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie>(){
-        override fun areItemsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie, newItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<ResultMovie>(){
+        override fun areItemsTheSame(oldItem: ResultMovie, newItem: ResultMovie): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie, newItem: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie): Boolean {
+        override fun areContentsTheSame(oldItem: ResultMovie, newItem: ResultMovie): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -38,7 +38,7 @@ class SimiliarAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<S
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitData(value: List<ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie>?) = differ.submitList(value)
+    fun submitData(value: List<ResultMovie>?) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -57,6 +57,6 @@ class SimiliarAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<S
     }
 
     interface OnClickListener{
-        fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie)
+        fun onClickItem(data: ResultMovie)
     }
 }

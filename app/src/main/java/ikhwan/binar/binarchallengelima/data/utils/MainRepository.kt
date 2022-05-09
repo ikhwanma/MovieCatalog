@@ -1,7 +1,7 @@
 package ikhwan.binar.binarchallengelima.data.utils
 
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 
 class MainRepository(private val apiHelper: ApiHelper) {
     suspend fun getPopularMovie(apiKey : String) = apiHelper.getPopularMovies(apiKey)

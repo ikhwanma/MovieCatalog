@@ -1,10 +1,7 @@
 package ikhwan.binar.binarchallengelima.data.helper
 
-import ikhwan.binar.binarchallengelima.data.model.users.GetUserResponseItem
-import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.data.network.ApiService
-import retrofit2.Call
-import retrofit2.http.Body
 
 class ApiHelper(private val apiService: ApiService) {
     suspend fun getPopularMovies(apiKey : String) = apiService.getPopularMovie(apiKey)

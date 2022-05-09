@@ -1,13 +1,15 @@
-package ikhwan.binar.binarchallengelima.data.model.popularmovie
+package ikhwan.binar.binarchallengelima.model.nowplaying
 
 
 import com.google.gson.annotations.SerializedName
 
-data class GetPopularMovieResponse(
+data class GetNowPlayingResponse(
+    @SerializedName("dates")
+    val dates: Dates,
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val resultMovies: List<ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie>,
+    val resultNows: List<ResultNow>,
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("total_results")

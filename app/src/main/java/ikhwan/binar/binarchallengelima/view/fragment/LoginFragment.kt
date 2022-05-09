@@ -1,10 +1,9 @@
 package ikhwan.binar.binarchallengelima.view.fragment
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +11,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import ikhwan.binar.binarchallengelima.R
+import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
 import ikhwan.binar.binarchallengelima.data.utils.Status
@@ -30,13 +29,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var viewModelUser : UserApiViewModel
+    private lateinit var viewModelUser: UserApiViewModel
+    private lateinit var pref: DataStoreManager
 
     private lateinit var email: String
     private lateinit var password: String
     private var viewPass: Boolean = false
     private var cek: Boolean = false
+
+    private var cekEmail: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +46,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Login"
+
+        pref = DataStoreManager(requireContext())
+
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance))
+            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
         )[UserApiViewModel::class.java]
 
         return binding.root
@@ -55,13 +59,13 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences =
-            requireActivity().getSharedPreferences(PREF_USER, Context.MODE_PRIVATE)
+
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        if (sharedPreferences.contains(EMAIL)) {
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
+        viewModelUser.getEmail().observe(viewLifecycleOwner) {
+            cekEmail = it
+            Log.d("cekEmail", cekEmail)
         }
 
         binding.btnLogin.setOnClickListener(this)
@@ -105,29 +109,37 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
-            viewModelUser.getAllUsers().observe(viewLifecycleOwner){
-                when(it.status){
+            viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
+                when (it.status) {
                     Status.SUCCESS -> {
                         viewModelUser.loginStatus.postValue(true)
                         if (it.data != null) {
                             for (data in it.data) {
                                 if (email == data.email && password == data.password) {
-                                    val editor = sharedPreferences.edit()
+                                    /*val editor = sharedPreferences.edit()
                                     editor.putString(EMAIL, email)
-                                    editor.apply()
+                                    editor.apply()*/
+                                        viewModelUser.setEmail(email)
                                     Navigation.findNavController(requireView())
                                         .navigate(R.id.action_loginFragment_to_homeFragment)
                                     break
                                 } else {
-                                    Toast.makeText(requireContext(), "Email atau Password Salah", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Email atau Password Salah",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }
                     }
                     Status.LOADING -> {
-                        LoginWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
+                        LoginWaitDialogFragment().show(
+                            requireActivity().supportFragmentManager,
+                            null
+                        )
                     }
-                    Status.ERROR ->{
+                    Status.ERROR -> {
                         viewModelUser.loginStatus.postValue(true)
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
@@ -178,9 +190,5 @@ class LoginFragment : Fragment(), View.OnClickListener {
         return emailPattern.matcher(email).matches()
     }
 
-    companion object {
-        const val PREF_USER = "user_preference"
-        const val EMAIL = "email"
-    }
 
 }

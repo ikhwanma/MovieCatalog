@@ -10,16 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import ikhwan.binar.binarchallengelima.R
+import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
-import ikhwan.binar.binarchallengelima.data.model.users.GetUserResponseItem
-import ikhwan.binar.binarchallengelima.data.model.users.PostUserResponse
+import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
+import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.view.dialogfragment.RegisterWaitDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
@@ -40,7 +39,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var viewKonfPass: Boolean = false
 
     private lateinit var listUser: List<GetUserResponseItem>
-
+    private lateinit var pref: DataStoreManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +48,12 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Register"
+
+        pref = DataStoreManager(requireContext())
+
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance))
+            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
         )[UserApiViewModel::class.java]
 
         return binding.root

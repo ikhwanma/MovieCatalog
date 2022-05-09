@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.databinding.ItemMovieBinding
-import ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie
+import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 
 class MovieAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie) {
+        fun bind(data: ResultMovie) {
             if (data.releaseDate != "") {
                 val list = data.releaseDate.split("-").toTypedArray()
                 val day = list[2]
@@ -121,6 +121,6 @@ class MovieAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<Movi
     }
 
     interface OnClickListener{
-        fun onClickItem(data: ikhwan.binar.binarchallengelima.data.model.popularmovie.ResultMovie)
+        fun onClickItem(data: ResultMovie)
     }
 }

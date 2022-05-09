@@ -18,24 +18,24 @@ class ApiClient {
             }
         }
 
-        private val client = OkHttpClient.Builder().addInterceptor(ikhwan.binar.binarchallengelima.data.network.ApiClient.Companion.logging).build()
+        private val client = OkHttpClient.Builder().addInterceptor(logging).build()
 
-        val instance: ikhwan.binar.binarchallengelima.data.network.ApiService by lazy {
+        val instance: ApiService by lazy {
             val retrofit = Retrofit.Builder()
-                .baseUrl(ikhwan.binar.binarchallengelima.data.network.ApiClient.Companion.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(ikhwan.binar.binarchallengelima.data.network.ApiClient.Companion.client)
+                .client(client)
                 .build()
-            retrofit.create(ikhwan.binar.binarchallengelima.data.network.ApiService::class.java)
+            retrofit.create(ApiService::class.java)
         }
 
-        val userInstance: ikhwan.binar.binarchallengelima.data.network.ApiService by lazy {
+        val userInstance: ApiService by lazy {
             val retrofit = Retrofit.Builder()
-                .baseUrl(ikhwan.binar.binarchallengelima.data.network.ApiClient.Companion.BASE_USER_URL)
+                .baseUrl(BASE_USER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(ikhwan.binar.binarchallengelima.data.network.ApiClient.Companion.client)
+                .client(client)
                 .build()
-            retrofit.create(ikhwan.binar.binarchallengelima.data.network.ApiService::class.java)
+            retrofit.create(ApiService::class.java)
         }
 
     }
