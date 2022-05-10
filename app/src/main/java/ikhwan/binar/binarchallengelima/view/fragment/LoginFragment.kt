@@ -116,14 +116,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
                         if (it.data != null) {
                             for (data in it.data) {
                                 if (email == data.email && password == data.password) {
-                                    /*val editor = sharedPreferences.edit()
-                                    editor.putString(EMAIL, email)
-                                    editor.apply()*/
                                         viewModelUser.setEmail(email)
                                     Navigation.findNavController(requireView())
                                         .navigate(R.id.action_loginFragment_to_homeFragment)
                                     break
-                                } else {
+                                }else {
                                     Toast.makeText(
                                         requireContext(),
                                         "Email atau Password Salah",

@@ -38,7 +38,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var viewPass: Boolean = false
     private var viewKonfPass: Boolean = false
 
-    private lateinit var listUser: List<GetUserResponseItem>
+    private var listUser: List<GetUserResponseItem> = emptyList()
     private lateinit var pref: DataStoreManager
 
     override fun onCreateView(
@@ -139,7 +139,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             email,
             "",
             password,
-            name
+            name,
         )
         RegisterWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
 

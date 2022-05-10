@@ -60,20 +60,13 @@ class ProfileFragment : Fragment() {
             binding.apply {
                 tvName.text = it.fullName
                 tvUsername.text = it.username
+
             }
         }
 
-        viewModelUser.getImage().observe(viewLifecycleOwner){
-            Log.d("imgHandlerBtm", "BTM : $it")
-            if (it != ""){
+        viewModelUser.getImage().observe(viewLifecycleOwner) {
+            if (it != "") {
                 binding.imgUser.setImageBitmap(convertStringToBitmap(it))
-            }
-        }
-
-        viewModelUser.getImageGallery().observe(viewLifecycleOwner){
-            Log.d("imgHandlerUri", "URI $it")
-            if (it != ""){
-                binding.imgUser.setImageURI(Uri.parse(it))
             }
         }
 
@@ -95,7 +88,6 @@ class ProfileFragment : Fragment() {
                     .setIcon(R.mipmap.ic_launcher_round)
                     .setPositiveButton("Yes") { _, _ ->
                         viewModelUser.setImage("")
-                        viewModelUser.setImageGallery("")
                         viewModelUser.setEmail("")
                         viewModelMovie.setBoolean(false)
                         val navOptions =
@@ -113,7 +105,8 @@ class ProfileFragment : Fragment() {
                 true
             }
             R.id.edit_profile -> {
-                Navigation.findNavController(requireView()).navigate(R.id.action_profileFragment2_to_profileFragment)
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_profileFragment2_to_profileFragment)
                 true
             }
             else -> true

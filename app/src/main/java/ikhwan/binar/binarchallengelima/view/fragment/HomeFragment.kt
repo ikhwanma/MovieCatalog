@@ -1,6 +1,5 @@
 package ikhwan.binar.binarchallengelima.view.fragment
 
-import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -194,8 +193,15 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.profile -> {
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_homeFragment_to_profileFragment2)
+                viewModelUser.user.observe(viewLifecycleOwner){
+                    if (it.fullName == ""){
+                        Navigation.findNavController(requireView())
+                            .navigate(R.id.action_homeFragment_to_profileFragment)
+                    }else{
+                        Navigation.findNavController(requireView())
+                            .navigate(R.id.action_homeFragment_to_profileFragment2)
+                    }
+                }
                 true
             }
             else -> true

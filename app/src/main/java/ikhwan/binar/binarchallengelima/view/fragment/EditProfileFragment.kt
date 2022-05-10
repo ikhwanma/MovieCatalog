@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -53,7 +54,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     private var viewPass: Boolean = false
 
     private var imgBitmap = ""
-    private var imgUri = ""
 
     private lateinit var viewModelUser: UserApiViewModel
 
@@ -98,15 +98,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             this.id = it.id
         }
 
-        viewModelUser.getImage().observe(viewLifecycleOwner){
-            if (it!=""){
+        viewModelUser.getImage().observe(viewLifecycleOwner) {
+            if (it != "") {
                 binding.imgUser.setImageBitmap(convertStringToBitmap(it))
-            }
-        }
-
-        viewModelUser.getImageGallery().observe(viewLifecycleOwner){
-            if (it != ""){
-                binding.imgUser.setImageURI(Uri.parse(it))
             }
         }
 
@@ -197,9 +191,11 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private val galleryResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
-            val str = result.toString()
-            imgUri = str
-            binding.imgUser.setImageURI(Uri.parse(str))
+            binding.imgUser.setImageURI(result)
+            val bitmap = (binding.imgUser.drawable as BitmapDrawable).bitmap
+            val str = bitMapToString(bitmap)
+            imgBitmap = str!!
+            Log.d("imgUri", imgBitmap)
         }
 
     private fun openGallery() {
@@ -339,29 +335,19 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 return
             }
         }
+
         val user = PostUserResponse(
             address,
             birthDate,
             email,
             fullName,
             password,
-            username
+            username,
         )
         updateUser(user)
     }
 
     private fun updateUser(user: PostUserResponse) {
-        if (imgBitmap != ""){
-            Log.d("imgHandlerBtm", imgBitmap)
-            viewModelUser.setImage(imgBitmap)
-            viewModelUser.setImageGallery("")
-        }
-
-        if (imgUri != ""){
-            Log.d("imgHandlerUri", imgUri)
-            viewModelUser.setImageGallery(imgUri)
-            viewModelUser.setImage("")
-        }
         viewModelUser.setImage(imgBitmap)
         viewModelUser.updateUser(user, id).observe(viewLifecycleOwner){
             when(it.status){

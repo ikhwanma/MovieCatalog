@@ -27,12 +27,6 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    suspend fun setImageGallery(img: String){
-        context.galleryDataStore.edit {
-            it[GALLERY_KEY] = img
-        }
-    }
-
     fun getUser() : Flow<String>{
         return context.userDataStore.data.map {
             it[USER_KEY] ?: ""
@@ -51,23 +45,15 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    fun getImageGallery() : Flow<String>{
-        return context.galleryDataStore.data.map {
-            it[GALLERY_KEY] ?: ""
-        }
-    }
-
     companion object {
         private const val USERDATA_NAME = "user_preferences"
         private const val VIEWDATA_NAME = "view_preferences"
         private const val IMAGEDATA_NAME = "camera_preferences"
         private const val GALLERYDATA_NAME = "gallery_preferences"
 
-
         private val USER_KEY = stringPreferencesKey("user_key")
         private val VIEW_KEY = booleanPreferencesKey("view_key")
         private val IMAGE_KEY = stringPreferencesKey("camera_key")
-        private val GALLERY_KEY = stringPreferencesKey("gallery_key")
 
         private val Context.userDataStore by preferencesDataStore(
             name = USERDATA_NAME

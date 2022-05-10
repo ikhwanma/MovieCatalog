@@ -36,16 +36,6 @@ class UserApiViewModel(private val mainRepository: MainRepository, private val p
         return pref.getImage().asLiveData()
     }
 
-    fun setImageGallery(img: String){
-        viewModelScope.launch {
-            pref.setImageGallery(img)
-        }
-    }
-
-    fun getImageGallery(): LiveData<String>{
-        return pref.getImageGallery().asLiveData()
-    }
-
     fun getAllUsers() = liveData(Dispatchers.IO){
         emit(Resource.loading(null))
         try {
