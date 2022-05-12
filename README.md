@@ -8,17 +8,17 @@ Using TMDB API for list and detail movie, and using mockApi.io for Login and Reg
 ### How to add your TMDB API Key:
 - Open project : local.properties
 - Add this code : 
-```
+```xml
  TheMovieDBApi = YOUR_KEY
 ```
 For example :  
-```
+```xml
  TheMovieDBApi = 6dshjakdhau8291h
 ```
 ### Another way to add your TMDB API Key:
 - Open AndroidManifest.xml
 - Search this line :
-```
+```xml
 <meta-data
             android:name = "apiKey"
             android:value = "${TheMovieDBApi}"/>
@@ -26,7 +26,7 @@ For example :
 - Edit android:value to your TMDB API Key
 <p>For example</p>
 
-```
+```xml
 <meta-data
             android:name = "apiKey"
             android:value = "6dshjakdhau8291h"/>
@@ -38,3 +38,7 @@ For example :
 - List popular movie
 - List now playing movie
 - Detail movie(title, release date(only year), poster, average vote, tagline, genre, overview, cast, similiar movie)
+- User favorite movie using database room
+- Add image profile for user & save image in data store
+- Using design pattern MVVM
+- Using navigation component single activity
