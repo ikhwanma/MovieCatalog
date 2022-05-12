@@ -18,6 +18,7 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
 import ikhwan.binar.binarchallengelima.view.dialogfragment.LoginWaitDialogFragment
@@ -51,7 +52,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
+            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
+                .favoriteDao())
         )[UserApiViewModel::class.java]
 
         return binding.root
@@ -59,7 +61,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 

@@ -26,7 +26,6 @@
                 android:id="@+id/cv_rating_background"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignEnd="@+id/img_background_detail"
                 android:layout_margin="20dp"
                 android:backgroundTint="@color/green_rating"
                 android:elevation="10dp"
@@ -96,6 +95,18 @@
                 app:srcCompat="@color/midnight_blue"
                 app:tint="#212223" />
 
+            <ImageButton
+                android:id="@+id/btn_favorite"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/ic_baseline_favorite_border_24"
+                android:contentDescription="@string/image" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_img_movie"
                 android:layout_width="150dp"
@@ -108,8 +119,8 @@
                     android:id="@+id/img_movie"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:contentDescription="@string/image"/>
+                    android:contentDescription="@string/image"
+                    android:scaleType="fitXY" />
             </androidx.cardview.widget.CardView>
 
             <TextView
@@ -195,9 +206,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_similiar"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
                     android:layout_height="190dp"
                     android:orientation="horizontal"
+                    android:padding="10dp"
                     tools:itemCount="5"
                     tools:listitem="@layout/item_similiar" />
 

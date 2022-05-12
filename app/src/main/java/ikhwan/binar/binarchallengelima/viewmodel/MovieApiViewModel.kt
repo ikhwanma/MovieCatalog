@@ -15,6 +15,8 @@ class MovieApiViewModel(private val mainRepository: MainRepository, private val 
     val id = MutableLiveData<Int>()
     val data = MutableLiveData<GetDetailMovieResponse>()
 
+    val listFavorite = MutableLiveData<List<GetDetailMovieResponse>>()
+
     fun setBoolean(boolean: Boolean){
         viewModelScope.launch {
             pref.setViewHome(boolean)

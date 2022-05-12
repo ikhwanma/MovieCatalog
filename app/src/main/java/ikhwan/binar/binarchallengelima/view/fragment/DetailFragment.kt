@@ -2,11 +2,11 @@ package ikhwan.binar.binarchallengelima.view.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +19,8 @@ import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.room.Favorite
+import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.view.adapter.CastAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.SimiliarAdapter
@@ -27,8 +29,10 @@ import ikhwan.binar.binarchallengelima.model.credit.Cast
 import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.view.dialogfragment.ShowImageDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
+import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import jp.wasabeef.glide.transformations.BlurTransformation
+import kotlinx.coroutines.*
 
 class DetailFragment : Fragment() {
 
@@ -36,7 +40,10 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModelMovie: MovieApiViewModel
+    private lateinit var viewModelUser: UserApiViewModel
     private lateinit var pref: DataStoreManager
+
+    private var favoriteDatabase: FavoriteDatabase? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,12 +53,27 @@ class DetailFragment : Fragment() {
 
         (activity as AppCompatActivity?)!!.supportActionBar?.hide()
 
+        favoriteDatabase = FavoriteDatabase.getInstance(requireContext())
 
         pref = DataStoreManager(requireContext())
 
+        viewModelUser = ViewModelProvider(
+            requireActivity(),
+            ViewModelFactory(
+                ApiHelper(ApiClient.userInstance),
+                pref,
+                FavoriteDatabase.getInstance(requireContext())!!
+                    .favoriteDao()
+            )
+        )[UserApiViewModel::class.java]
         viewModelMovie = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.instance), pref)
+            ViewModelFactory(
+                ApiHelper(ApiClient.instance),
+                pref,
+                FavoriteDatabase.getInstance(requireContext())!!
+                    .favoriteDao()
+            )
         )[MovieApiViewModel::class.java]
 
         return binding.root
@@ -61,10 +83,9 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModelMovie.id.observe(viewLifecycleOwner) { id ->
-            viewModelMovie.getDetailMovie(id).observe(viewLifecycleOwner){
-                when(it.status){
+            viewModelMovie.getDetailMovie(id).observe(viewLifecycleOwner) {
+                when (it.status) {
                     Status.ERROR -> {
-                        Log.d("errMessage", it.message!!)
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
                     Status.SUCCESS -> {
@@ -72,12 +93,12 @@ class DetailFragment : Fragment() {
                         setDetail(it.data!!)
                     }
                     Status.LOADING -> {
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+
                     }
                 }
             }
-            viewModelMovie.getCreditMovie(id).observe(viewLifecycleOwner){
-                when(it.status){
+            viewModelMovie.getCreditMovie(id).observe(viewLifecycleOwner) {
+                when (it.status) {
                     Status.ERROR -> {
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
@@ -85,13 +106,13 @@ class DetailFragment : Fragment() {
                         showList(it.data!!.cast)
                     }
                     Status.LOADING -> {
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+
                     }
                 }
             }
 
-            viewModelMovie.getSimilarMovie(id).observe(viewLifecycleOwner){
-                when(it.status){
+            viewModelMovie.getSimilarMovie(id).observe(viewLifecycleOwner) {
+                when (it.status) {
                     Status.ERROR -> {
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
@@ -99,7 +120,6 @@ class DetailFragment : Fragment() {
                         showListSimilar(it.data!!.resultMovies)
                     }
                     Status.LOADING -> {
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -149,15 +169,57 @@ class DetailFragment : Fragment() {
                     cvRatingRed.visibility = View.VISIBLE
                 }
             }
+            viewModelUser.user.observe(viewLifecycleOwner){ user ->
+                viewModelUser.getFavorite().observe(viewLifecycleOwner){ favorite ->
+                    var cek = false
+                    var dataFav: Favorite? = null
+                    for (fav in favorite){
+                        if (fav.idMovie == data.id && fav.email == user.email){
+                            cek = true
+                            dataFav = fav
+                            break
+                        }
+                    }
+                    if (cek){
+                        btnFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
+                    }else{
+
+                        btnFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
+
+                    }
+
+                    val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_anim)
+
+                    btnFavorite.setOnClickListener {
+                        if (cek){
+                            btnFavorite.startAnimation(animation)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                viewModelUser.deleteFavorite(dataFav!!)
+                            }
+                            Toast.makeText(requireContext(), "Removed fom favorite", Toast.LENGTH_SHORT).show()
+                        }else{
+                            btnFavorite.startAnimation(animation)
+                            val favor = Favorite(null, user.email, data.id)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                viewModelUser.addFavorite(favor)
+                            }
+                            Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun showListSimilar(it: List<ResultMovie>?) {
-        binding.rvSimiliar.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        val adapter = SimiliarAdapter(object : SimiliarAdapter.OnClickListener{
+        binding.rvSimiliar.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val adapter = SimiliarAdapter(object : SimiliarAdapter.OnClickListener {
             override fun onClickItem(data: ResultMovie) {
                 viewModelMovie.id.postValue(data.id)
-                Navigation.findNavController(requireView()).navigate(R.id.action_detailFragment_self)
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_detailFragment_self)
             }
 
         })
@@ -167,8 +229,8 @@ class DetailFragment : Fragment() {
 
     private fun showList(cast: List<Cast>) {
         binding.rvCast.layoutManager =
-            LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        val adapter = CastAdapter(object : CastAdapter.OnClickListener{
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val adapter = CastAdapter(object : CastAdapter.OnClickListener {
             override fun onClickItem(data: Cast) {
                 val baseUrlImg = "https://image.tmdb.org/t/p/w500/"
                 val imgUrl = baseUrlImg + data.profilePath

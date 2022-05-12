@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -16,6 +17,7 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.view.adapter.MovieAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.MovieLinearAdapter
@@ -43,20 +45,31 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
         (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
         pref = DataStoreManager(requireContext())
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
+            ViewModelFactory(
+                ApiHelper(ApiClient.userInstance),
+                pref,
+                FavoriteDatabase.getInstance(requireContext())!!
+                    .favoriteDao()
+            )
         )[UserApiViewModel::class.java]
         viewModelMovie = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.instance), pref)
+            ViewModelFactory(
+                ApiHelper(ApiClient.instance),
+                pref,
+                FavoriteDatabase.getInstance(requireContext())!!
+                    .favoriteDao()
+            )
         )[MovieApiViewModel::class.java]
 
-        viewModelUser.getEmail().observe(viewLifecycleOwner){
+        viewModelUser.getEmail().observe(viewLifecycleOwner) {
             val email = it
             viewModelUser.getAllUsers().observe(viewLifecycleOwner) { user ->
                 when (user.status) {
@@ -76,7 +89,8 @@ class HomeFragment : Fragment() {
                             }
                         }
                     }
-                    ERROR -> Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT).show()
+                    ERROR -> Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT)
+                        .show()
                     LOADING -> Log.d("loadingMsg", "Loading")
                 }
             }
@@ -98,7 +112,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModelMovie.getBoolean().observe(viewLifecycleOwner){
+        viewModelMovie.getBoolean().observe(viewLifecycleOwner) {
             val cek = it
             binding.switchRv.isChecked = cek
 
@@ -113,18 +127,17 @@ class HomeFragment : Fragment() {
                         binding.switchRv.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
                                 viewModelMovie.setBoolean(true)
-//                                sharedPreferences.edit().putBoolean(CEK, true).apply()
                                 showListLinear(resource.data.resultMovies)
                             } else {
                                 viewModelMovie.setBoolean(false)
-//                                sharedPreferences.edit().putBoolean(CEK, false).apply()
                                 showList(resource.data.resultMovies)
                             }
                         }
                         binding.progressCircular.visibility = View.GONE
                     }
                     ERROR -> {
-                        Toast.makeText(requireContext(), resource.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), resource.message, Toast.LENGTH_SHORT)
+                            .show()
                     }
                     LOADING -> {
                         Log.d("loadingMsg", "Loading")
@@ -193,14 +206,9 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.profile -> {
-                viewModelUser.user.observe(viewLifecycleOwner){
-                    if (it.fullName == ""){
-                        Navigation.findNavController(requireView())
-                            .navigate(R.id.action_homeFragment_to_profileFragment)
-                    }else{
-                        Navigation.findNavController(requireView())
-                            .navigate(R.id.action_homeFragment_to_profileFragment2)
-                    }
+                viewModelUser.user.observe(viewLifecycleOwner) {
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.action_homeFragment_to_profileFragment2)
                 }
                 true
             }

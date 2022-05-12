@@ -19,6 +19,7 @@ import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
 import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.view.dialogfragment.RegisterWaitDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
@@ -53,7 +54,8 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
+            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
+                .favoriteDao())
         )[UserApiViewModel::class.java]
 
         return binding.root

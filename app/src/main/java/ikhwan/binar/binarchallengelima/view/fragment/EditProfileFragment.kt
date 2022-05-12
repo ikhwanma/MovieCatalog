@@ -29,6 +29,7 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentEditProfileBinding
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
@@ -77,7 +78,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
+            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
+                .favoriteDao())
         )[UserApiViewModel::class.java]
 
         return binding.root
@@ -101,6 +103,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         viewModelUser.getImage().observe(viewLifecycleOwner) {
             if (it != "") {
                 binding.imgUser.setImageBitmap(convertStringToBitmap(it))
+                binding.imgUser.setOnClickListener {
+                    checkingPermissions()
+                }
             }
         }
 
@@ -195,7 +200,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             val bitmap = (binding.imgUser.drawable as BitmapDrawable).bitmap
             val str = bitMapToString(bitmap)
             imgBitmap = str!!
-            Log.d("imgUri", imgBitmap)
         }
 
     private fun openGallery() {

@@ -16,6 +16,7 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.data.network.ApiClient
+import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.databinding.FragmentSplashBinding
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
@@ -38,7 +39,8 @@ class SplashFragment : Fragment() {
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref)
+            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
+                .favoriteDao())
         )[UserApiViewModel::class.java]
 
         return binding.root
@@ -48,6 +50,8 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.hide()
+
+
 
         ObjectAnimator.ofPropertyValuesHolder(
             binding.imgLogo,

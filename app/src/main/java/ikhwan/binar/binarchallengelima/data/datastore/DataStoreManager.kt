@@ -49,7 +49,6 @@ class DataStoreManager(private val context: Context) {
         private const val USERDATA_NAME = "user_preferences"
         private const val VIEWDATA_NAME = "view_preferences"
         private const val IMAGEDATA_NAME = "camera_preferences"
-        private const val GALLERYDATA_NAME = "gallery_preferences"
 
         private val USER_KEY = stringPreferencesKey("user_key")
         private val VIEW_KEY = booleanPreferencesKey("view_key")
@@ -67,8 +66,5 @@ class DataStoreManager(private val context: Context) {
             name = IMAGEDATA_NAME
         )
 
-        private val Context.galleryDataStore by preferencesDataStore(
-            name = GALLERYDATA_NAME
-        )
     }
 }
