@@ -190,11 +190,20 @@ class DetailFragment : Fragment() {
 
                     btnFavorite.setOnClickListener {
                         if (cek){
-                            btnFavorite.startAnimation(animation)
-                            CoroutineScope(Dispatchers.Main).launch {
-                                viewModelUser.deleteFavorite(dataFav!!)
+                            if (favorite.size == 1){
+                                btnFavorite.startAnimation(animation)
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    viewModelUser.deleteFavorite(dataFav!!)
+                                }
+                                viewModelMovie.listFavorite.postValue(null)
+                                Toast.makeText(requireContext(), "Removed fom favorite", Toast.LENGTH_SHORT).show()
+                            }else{
+                                btnFavorite.startAnimation(animation)
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    viewModelUser.deleteFavorite(dataFav!!)
+                                }
+                                Toast.makeText(requireContext(), "Removed fom favorite", Toast.LENGTH_SHORT).show()
                             }
-                            Toast.makeText(requireContext(), "Removed fom favorite", Toast.LENGTH_SHORT).show()
                         }else{
                             btnFavorite.startAnimation(animation)
                             val favor = Favorite(null, user.email, data.id)

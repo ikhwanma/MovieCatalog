@@ -183,7 +183,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         AlertDialog.Builder(requireContext())
             .setIcon(R.mipmap.ic_launcher)
             .setTitle("Choose Image")
-            .setMessage(" Warning!! \n- Image Will be cropped to center\n- Better to use image with resolution  1920x1080 or below\n- Better to use image below 1 MB")
+            .setMessage(" Warning!! \n- Image Will be cropped to center\n- Better to use image with resolution  1920x1080 or below" +
+                    "\n- Better to select image from gallery")
             .setPositiveButton("Gallery") { _, _ -> openGallery() }
             .setNegativeButton("Camera") { _, _ -> openCamera() }
             .show()

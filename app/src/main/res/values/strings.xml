@@ -44,4 +44,5 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="the_movie_db_user">The Movie DB User</string>
     <string name="favorite_movie">Favorite Movie</string>
+    <string name="you_don_t_have_favorite_movie">You don\'t have favorite movie</string>
 </resources>
