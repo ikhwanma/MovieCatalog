@@ -45,14 +45,17 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
+
     companion object {
         private const val USERDATA_NAME = "user_preferences"
         private const val VIEWDATA_NAME = "view_preferences"
         private const val IMAGEDATA_NAME = "camera_preferences"
 
+
         private val USER_KEY = stringPreferencesKey("user_key")
         private val VIEW_KEY = booleanPreferencesKey("view_key")
         private val IMAGE_KEY = stringPreferencesKey("camera_key")
+
 
         private val Context.userDataStore by preferencesDataStore(
             name = USERDATA_NAME

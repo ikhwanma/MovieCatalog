@@ -52,9 +52,29 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
-                .favoriteDao())
+            ViewModelFactory(
+                ApiHelper(ApiClient.userInstance),
+                pref,
+                FavoriteDatabase.getInstance(requireContext())!!
+                    .favoriteDao()
+            )
         )[UserApiViewModel::class.java]
+
+        viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    if (it.data != null) {
+                        viewModelUser.listUser.postValue(it.data)
+                    }
+                }
+                Status.LOADING -> {
+
+                }
+                Status.ERROR -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         return binding.root
     }
@@ -110,39 +130,37 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
-            viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        viewModelUser.loginStatus.postValue(true)
-                        if (it.data != null) {
-                            for (data in it.data) {
-                                if (email == data.email && password == data.password) {
-                                        viewModelUser.setEmail(email)
-                                    Navigation.findNavController(requireView())
-                                        .navigate(R.id.action_loginFragment_to_homeFragment)
-                                    break
-                                }else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Email atau Password Salah",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
-                    }
-                    Status.LOADING -> {
-                        LoginWaitDialogFragment().show(
-                            requireActivity().supportFragmentManager,
-                            null
-                        )
-                    }
-                    Status.ERROR -> {
-                        viewModelUser.loginStatus.postValue(true)
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+            LoginWaitDialogFragment().show(
+                requireActivity().supportFragmentManager,
+                null
+            )
+            viewModelUser.listUser.observe(viewLifecycleOwner){
+                for (data in it) {
+                    if (email == data.email && password == data.password) {
+                        viewModelUser.setEmail(email)
+                        viewModelUser.loginCheck.postValue(true)
+                        break
+                    }else {
+                        viewModelUser.loginCheck.postValue(false)
                     }
                 }
             }
+
+            viewModelUser.loginCheck.observe(viewLifecycleOwner){
+                if (it == true){
+                    viewModelUser.loginStatus.postValue(true)
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.action_loginFragment_to_homeFragment)
+                }else{
+                    viewModelUser.loginStatus.postValue(true)
+                    Toast.makeText(
+                        requireContext(),
+                        "Email atau Password Salah",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
         }
     }
 

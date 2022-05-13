@@ -183,9 +183,7 @@ class DetailFragment : Fragment() {
                     if (cek){
                         btnFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
                     }else{
-
                         btnFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
-
                     }
 
                     val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_anim)

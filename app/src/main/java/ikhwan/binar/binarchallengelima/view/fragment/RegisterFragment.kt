@@ -30,7 +30,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModelUser : UserApiViewModel
+    private lateinit var viewModelUser: UserApiViewModel
 
     private lateinit var name: String
     private lateinit var email: String
@@ -54,8 +54,12 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
         viewModelUser = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
-                .favoriteDao())
+            ViewModelFactory(
+                ApiHelper(ApiClient.userInstance),
+                pref,
+                FavoriteDatabase.getInstance(requireContext())!!
+                    .favoriteDao()
+            )
         )[UserApiViewModel::class.java]
 
         return binding.root
@@ -64,8 +68,8 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModelUser.getAllUsers().observe(viewLifecycleOwner){
-            when(it.status){
+        viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
+            when (it.status) {
                 SUCCESS -> listUser = it.data!!
                 ERROR -> Log.d("errMsg", it.message.toString())
                 LOADING -> Log.d("loadingMsg", it.message.toString())
@@ -158,18 +162,24 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 }
             }
 
-            viewModelUser.registerUser(regUser).observe(viewLifecycleOwner){
-                when(it.status){
+            viewModelUser.registerUser(regUser).observe(viewLifecycleOwner) {
+                var cek = false
+                when (it.status) {
                     SUCCESS -> {
-                        Toast.makeText(
-                            requireContext(),
-                            "Register successful",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment)
+                        cek = true
                     }
                     ERROR -> Log.d("errMsg", it.message.toString())
                     LOADING -> Log.d("loadingMsg", it.message.toString())
+                }
+
+                if (cek){
+                    Toast.makeText(
+                        requireContext(),
+                        "Register successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.action_registerFragment_to_loginFragment)
                 }
             }
         }

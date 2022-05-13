@@ -7,6 +7,7 @@ import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.data.utils.MainRepository
 import ikhwan.binar.binarchallengelima.data.utils.Resource
+import ikhwan.binar.binarchallengelima.data.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -17,8 +18,10 @@ class UserApiViewModel(
 ) : ViewModel() {
 
     val user = MutableLiveData<GetUserResponseItem>()
-    val loginStatus = MutableLiveData<Boolean>()
-    val registerCheck = MutableLiveData<Boolean>()
+    val loginStatus = SingleLiveEvent<Boolean>()
+    val registerCheck = SingleLiveEvent<Boolean>()
+    val listUser = MutableLiveData<List<GetUserResponseItem>>()
+    val loginCheck = SingleLiveEvent<Boolean>()
 
     fun setEmail(email: String) {
         viewModelScope.launch {

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -54,10 +53,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     private lateinit var id: String
     private var viewPass: Boolean = false
 
-    private var imgBitmap = ""
-
     private lateinit var viewModelUser: UserApiViewModel
-
 
     private val cameraResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -103,9 +99,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         viewModelUser.getImage().observe(viewLifecycleOwner) {
             if (it != "") {
                 binding.imgUser.setImageBitmap(convertStringToBitmap(it))
-                binding.imgUser.setOnClickListener {
-                    checkingPermissions()
-                }
             }
         }
 
@@ -120,9 +113,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun bitMapToString(bitmap: Bitmap): String? {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-        val b: ByteArray = baos.toByteArray()
+        val byteArray = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArray)
+        val b: ByteArray = byteArray.toByteArray()
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
 
@@ -188,7 +181,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private fun chooseImageDialog() {
         AlertDialog.Builder(requireContext())
-            .setMessage("Pilih Gambar")
+            .setIcon(R.mipmap.ic_launcher)
+            .setTitle("Choose Image")
+            .setMessage(" Warning!! \n- Image Will be cropped to center\n- Better to use image with resolution  1920x1080 or below\n- Better to use image below 1 MB")
             .setPositiveButton("Gallery") { _, _ -> openGallery() }
             .setNegativeButton("Camera") { _, _ -> openCamera() }
             .show()
@@ -196,10 +191,33 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private val galleryResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
-            binding.imgUser.setImageURI(result)
-            val bitmap = (binding.imgUser.drawable as BitmapDrawable).bitmap
-            val str = bitMapToString(bitmap)
-            imgBitmap = str!!
+            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, result)
+
+            val dstBmp : Bitmap
+
+            if (bitmap.width >= bitmap.height){
+                dstBmp = Bitmap.createBitmap(
+                    bitmap,
+                    bitmap.width /2 - bitmap.height /2,
+                    0,
+                    bitmap.height,
+                    bitmap.height
+                )
+
+            }else{
+                dstBmp = Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    bitmap.height /2 - bitmap.width /2,
+                    bitmap.width,
+                    bitmap.width
+                )
+            }
+            val bitmaps = Bitmap.createScaledBitmap(dstBmp, 720, 720, true)
+            val str = bitMapToString(bitmaps)!!
+
+            viewModelUser.setImage(str)
+            Toast.makeText(requireContext(), "Image Updated", Toast.LENGTH_SHORT).show()
         }
 
     private fun openGallery() {
@@ -213,9 +231,31 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private fun handleCameraImage(intent: Intent?) {
         val bitmap = intent?.extras?.get("data") as Bitmap
-        binding.imgUser.setImageBitmap(bitmap)
-        val str = bitMapToString(bitmap)
-        imgBitmap = str!!
+
+        val dstBmp : Bitmap
+
+        if (bitmap.width >= bitmap.height){
+            dstBmp = Bitmap.createBitmap(
+                bitmap,
+                bitmap.width /2 - bitmap.height /2,
+                0,
+                bitmap.height,
+                bitmap.height
+            )
+
+        }else{
+            dstBmp = Bitmap.createBitmap(
+                bitmap,
+                0,
+                bitmap.height /2 - bitmap.width /2,
+                bitmap.width,
+                bitmap.width
+            )
+        }
+
+        val str = bitMapToString(dstBmp)!!
+        viewModelUser.setImage(str)
+        Toast.makeText(requireContext(), "Image Updated", Toast.LENGTH_SHORT).show()
     }
 
     private fun openDatePicker() {
@@ -352,7 +392,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateUser(user: PostUserResponse) {
-        viewModelUser.setImage(imgBitmap)
         viewModelUser.updateUser(user, id).observe(viewLifecycleOwner){
             when(it.status){
                 SUCCESS -> {

@@ -2,7 +2,6 @@ package ikhwan.binar.binarchallengelima.view.fragment
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -24,6 +23,7 @@ import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentProfileBinding
 import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
 import ikhwan.binar.binarchallengelima.view.adapter.FavoriteAdapter
+import ikhwan.binar.binarchallengelima.view.dialogfragment.ShowImageUserDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
@@ -90,9 +90,11 @@ class ProfileFragment : Fragment() {
         viewModelUser.getImage().observe(viewLifecycleOwner) {
             if (it != "") {
                 binding.imgUser.setImageBitmap(convertStringToBitmap(it))
+                binding.imgUser.setOnClickListener {
+                    ShowImageUserDialogFragment().show(requireActivity().supportFragmentManager, null)
+                }
             }
         }
-
     }
 
     private fun getFavorite(listIdMovie: MutableList<Int>?) {
@@ -147,6 +149,7 @@ class ProfileFragment : Fragment() {
                         viewModelUser.setImage("")
                         viewModelUser.setEmail("")
                         viewModelMovie.setBoolean(false)
+                        viewModelMovie.listFavorite.postValue(null)
                         val navOptions =
                             NavOptions.Builder().setPopUpTo(R.id.homeFragment, true).build()
                         Navigation.findNavController(requireView()).navigate(
