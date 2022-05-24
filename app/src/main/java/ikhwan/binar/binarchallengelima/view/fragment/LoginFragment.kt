@@ -11,34 +11,32 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status
+import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
 import ikhwan.binar.binarchallengelima.view.dialogfragment.LoginWaitDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import java.util.regex.Pattern
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModelUser: UserApiViewModel
-    private lateinit var pref: DataStoreManager
+
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     private lateinit var email: String
     private lateinit var password: String
     private var viewPass: Boolean = false
     private var cek: Boolean = false
-
     private var cekEmail: String = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,34 +45,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Login"
-
-        pref = DataStoreManager(requireContext())
-
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.userInstance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[UserApiViewModel::class.java]
-
-        viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    if (it.data != null) {
-                        viewModelUser.listUser.postValue(it.data)
-                    }
-                }
-                Status.LOADING -> {
-
-                }
-                Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 
         return binding.root
     }
@@ -130,37 +100,37 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
 
         if (inputCheck(email, password, cek)) {
-            LoginWaitDialogFragment().show(
-                requireActivity().supportFragmentManager,
-                null
-            )
-            viewModelUser.listUser.observe(viewLifecycleOwner){
-                for (data in it) {
-                    if (email == data.email && password == data.password) {
-                        viewModelUser.setEmail(email)
+
+            viewModelUser.getUser(email).observe(viewLifecycleOwner){
+                when (it.status) {
+                    SUCCESS -> {
+                        val data = it.data!!
+                        viewModelUser.loginStatus.postValue(true)
+                        if (data.isNotEmpty()){
+                            if (password == data[0].password){
+                                viewModelUser.setEmail(email)
+                                Navigation.findNavController(requireView())
+                                    .navigate(R.id.action_loginFragment_to_homeFragment)
+                            }else{
+                                Toast.makeText(requireContext(), "Wrong password", Toast.LENGTH_SHORT).show()
+                            }
+                        }else{
+                            Toast.makeText(requireContext(), "Email not registered", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+                    ERROR -> {
                         viewModelUser.loginCheck.postValue(true)
-                        break
-                    }else {
-                        viewModelUser.loginCheck.postValue(false)
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    LOADING -> {
+                        LoginWaitDialogFragment().show(
+                            requireActivity().supportFragmentManager,
+                            null
+                        )
                     }
                 }
             }
-
-            viewModelUser.loginCheck.observe(viewLifecycleOwner){
-                if (it == true){
-                    viewModelUser.loginStatus.postValue(true)
-                    Navigation.findNavController(requireView())
-                        .navigate(R.id.action_loginFragment_to_homeFragment)
-                }else{
-                    viewModelUser.loginStatus.postValue(true)
-                    Toast.makeText(
-                        requireContext(),
-                        "Email atau Password Salah",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
         }
     }
 

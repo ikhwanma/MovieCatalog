@@ -22,28 +22,23 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.Navigation
+import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentEditProfileBinding
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import java.io.ByteArrayOutputStream
 import java.util.*
 
-
+@AndroidEntryPoint
 class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var pref: DataStoreManager
 
     private val c = Calendar.getInstance()
     private val year = c.get(Calendar.YEAR)
@@ -53,7 +48,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     private lateinit var id: String
     private var viewPass: Boolean = false
 
-    private lateinit var viewModelUser: UserApiViewModel
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     private val cameraResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -69,14 +64,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         _binding = FragmentEditProfileBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Edit Profile"
-
-        pref = DataStoreManager(requireContext())
-
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
-                .favoriteDao())
-        )[UserApiViewModel::class.java]
 
         return binding.root
     }

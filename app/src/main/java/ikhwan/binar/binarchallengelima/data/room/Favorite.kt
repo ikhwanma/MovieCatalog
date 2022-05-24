@@ -12,5 +12,6 @@ import kotlinx.parcelize.Parcelize
 data class Favorite(
     @PrimaryKey(autoGenerate = true) var id: Int?,
     @ColumnInfo(name = "email") var email: String?,
-    @ColumnInfo(name = "id_movie") var idMovie: Int?
+    @ColumnInfo(name = "id_movie") var idMovie: Int?,
+    @ColumnInfo(name = "img_movie") var imgMovie: String?
 ): Parcelable

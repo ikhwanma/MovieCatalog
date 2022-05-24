@@ -8,36 +8,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
-import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import dagger.hilt.android.AndroidEntryPoint
+import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentShowImageUserDialogBinding
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 
+@AndroidEntryPoint
 class ShowImageUserDialogFragment : DialogFragment() {
 
     private var _binding : FragmentShowImageUserDialogBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModelUser: UserApiViewModel
-    private lateinit var pref: DataStoreManager
+
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentShowImageUserDialogBinding.inflate(inflater, container, false )
-
-        pref = DataStoreManager(requireContext())
-
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.userInstance), pref, FavoriteDatabase.getInstance(requireContext())!!
-                .favoriteDao())
-        )[UserApiViewModel::class.java]
 
         return binding.root
     }

@@ -10,27 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.Navigation
+import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.databinding.FragmentRegisterBinding
 import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.view.dialogfragment.RegisterWaitDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import java.util.regex.Pattern
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModelUser: UserApiViewModel
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     private lateinit var name: String
     private lateinit var email: String
@@ -40,7 +37,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var viewKonfPass: Boolean = false
 
     private var listUser: List<GetUserResponseItem> = emptyList()
-    private lateinit var pref: DataStoreManager
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,31 +47,11 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Register"
 
-        pref = DataStoreManager(requireContext())
-
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.userInstance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[UserApiViewModel::class.java]
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModelUser.getAllUsers().observe(viewLifecycleOwner) {
-            when (it.status) {
-                SUCCESS -> listUser = it.data!!
-                ERROR -> Log.d("errMsg", it.message.toString())
-                LOADING -> Log.d("loadingMsg", it.message.toString())
-            }
-        }
 
         binding.apply {
             btnRegister.setOnClickListener(this@RegisterFragment)
@@ -147,40 +124,46 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             password,
             name,
         )
-        RegisterWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
 
         if (inputCheck(name, email, password, cek)) {
 
-            for (data in listUser) {
-                if (this.email == data.email) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Email has already used by another user",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return
-                }
-            }
-
-            viewModelUser.registerUser(regUser).observe(viewLifecycleOwner) {
-                var cek = false
+            viewModelUser.getUser(email).observe(viewLifecycleOwner) {
                 when (it.status) {
                     SUCCESS -> {
-                        cek = true
+                        val data = it.data!!
+                        if (data.isNotEmpty()) {
+                            viewModelUser.registerCheck.postValue(true)
+                            Toast.makeText(
+                                requireContext(),
+                                "Email has already used by another user",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            viewModelUser.registerUser(regUser).observe(viewLifecycleOwner) { reg ->
+                                when (reg.status) {
+                                    SUCCESS -> {
+                                        viewModelUser.registerCheck.postValue(true)
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Register successful",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        Navigation.findNavController(requireView())
+                                            .navigate(R.id.action_registerFragment_to_loginFragment)
+                                    }
+                                    ERROR -> {
+                                        viewModelUser.registerCheck.postValue(true)
+                                        Log.d("errMsg", reg.message.toString())
+                                    }
+                                    LOADING -> Log.d("loadingMsg", reg.message.toString())
+                                }
+                            }
+                        }
                     }
                     ERROR -> Log.d("errMsg", it.message.toString())
-                    LOADING -> Log.d("loadingMsg", it.message.toString())
+                    LOADING -> RegisterWaitDialogFragment().show(requireActivity().supportFragmentManager, null)
                 }
 
-                if (cek){
-                    Toast.makeText(
-                        requireContext(),
-                        "Register successful",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Navigation.findNavController(requireView())
-                        .navigate(R.id.action_registerFragment_to_loginFragment)
-                }
             }
         }
     }

@@ -9,18 +9,15 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
 import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
 import ikhwan.binar.binarchallengelima.data.room.Favorite
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.view.adapter.CastAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.SimiliarAdapter
@@ -30,20 +27,17 @@ import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.view.dialogfragment.ShowImageDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.*
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModelMovie: MovieApiViewModel
-    private lateinit var viewModelUser: UserApiViewModel
-    private lateinit var pref: DataStoreManager
-
-    private var favoriteDatabase: FavoriteDatabase? = null
+    private val viewModelMovie: MovieApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,29 +46,6 @@ class DetailFragment : Fragment() {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
 
         (activity as AppCompatActivity?)!!.supportActionBar?.hide()
-
-        favoriteDatabase = FavoriteDatabase.getInstance(requireContext())
-
-        pref = DataStoreManager(requireContext())
-
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.userInstance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[UserApiViewModel::class.java]
-        viewModelMovie = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.instance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[MovieApiViewModel::class.java]
 
         return binding.root
     }
@@ -169,48 +140,61 @@ class DetailFragment : Fragment() {
                     cvRatingRed.visibility = View.VISIBLE
                 }
             }
-            viewModelUser.user.observe(viewLifecycleOwner){ user ->
-                viewModelUser.getFavorite().observe(viewLifecycleOwner){ favorite ->
+            viewModelUser.user.observe(viewLifecycleOwner) { user ->
+                viewModelUser.getFavorite(user.email).observe(viewLifecycleOwner) { favorite ->
                     var cek = false
                     var dataFav: Favorite? = null
-                    for (fav in favorite){
-                        if (fav.idMovie == data.id && fav.email == user.email){
+                    for (fav in favorite) {
+                        if (fav.idMovie == data.id && fav.email == user.email) {
                             cek = true
                             dataFav = fav
                             break
                         }
                     }
-                    if (cek){
+                    if (cek) {
                         btnFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
-                    }else{
+                    } else {
                         btnFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
                     }
 
-                    val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_anim)
+                    val animation =
+                        AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_anim)
 
                     btnFavorite.setOnClickListener {
-                        if (cek){
-                            if (favorite.size == 1){
+                        if (cek) {
+                            if (favorite.size == 1) {
                                 btnFavorite.startAnimation(animation)
                                 CoroutineScope(Dispatchers.Main).launch {
                                     viewModelUser.deleteFavorite(dataFav!!)
                                 }
                                 viewModelMovie.listFavorite.postValue(null)
-                                Toast.makeText(requireContext(), "Removed fom favorite", Toast.LENGTH_SHORT).show()
-                            }else{
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Removed fom favorite",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
                                 btnFavorite.startAnimation(animation)
                                 CoroutineScope(Dispatchers.Main).launch {
                                     viewModelUser.deleteFavorite(dataFav!!)
                                 }
-                                Toast.makeText(requireContext(), "Removed fom favorite", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Removed fom favorite",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        }else{
+                        } else {
                             btnFavorite.startAnimation(animation)
-                            val favor = Favorite(null, user.email, data.id)
+                            val favor = Favorite(null, user.email, data.id, data.posterPath)
                             CoroutineScope(Dispatchers.Main).launch {
                                 viewModelUser.addFavorite(favor)
                             }
-                            Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                requireContext(),
+                                "Added to favorite",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     }

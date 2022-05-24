@@ -1,6 +1,7 @@
 package ikhwan.binar.binarchallengelima.viewmodel
 
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.room.Favorite
 import ikhwan.binar.binarchallengelima.model.users.GetUserResponseItem
@@ -11,11 +12,14 @@ import ikhwan.binar.binarchallengelima.data.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-class UserApiViewModel(
+@HiltViewModel
+class UserApiViewModel @Inject constructor(
     private val mainRepository: MainRepository,
     private val pref: DataStoreManager
 ) : ViewModel() {
+
 
     val user = MutableLiveData<GetUserResponseItem>()
     val loginStatus = SingleLiveEvent<Boolean>()
@@ -43,10 +47,10 @@ class UserApiViewModel(
         return pref.getImage().asLiveData()
     }
 
-    fun getAllUsers() = liveData(Dispatchers.IO) {
+    fun getUser(email: String) = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))
         try {
-            emit(Resource.success(mainRepository.getAllUsers()))
+            emit(Resource.success(mainRepository.getUser(email)))
         } catch (e: Exception) {
             emit(Resource.error(data = null, message = e.message ?: "Error Occured!"))
         }
@@ -78,5 +82,5 @@ class UserApiViewModel(
         mainRepository.deleteFavorite(favorite)
     }
 
-    fun getFavorite() = mainRepository.getFavorite()
+    fun getFavorite(email: String) = mainRepository.getFavorite(email)
 }

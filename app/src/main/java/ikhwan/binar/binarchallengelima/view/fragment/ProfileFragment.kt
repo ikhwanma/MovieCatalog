@@ -10,15 +10,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
+import ikhwan.binar.binarchallengelima.data.room.Favorite
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentProfileBinding
 import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
@@ -26,15 +24,15 @@ import ikhwan.binar.binarchallengelima.view.adapter.FavoriteAdapter
 import ikhwan.binar.binarchallengelima.view.dialogfragment.ShowImageUserDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModelUser: UserApiViewModel
-    private lateinit var viewModelMovie: MovieApiViewModel
-    private lateinit var pref: DataStoreManager
+    private val viewModelMovie: MovieApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,27 +42,6 @@ class ProfileFragment : Fragment() {
 
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
         (activity as AppCompatActivity?)!!.supportActionBar?.title = "Profile"
-
-        pref = DataStoreManager(requireContext())
-
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.userInstance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[UserApiViewModel::class.java]
-        viewModelMovie = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.instance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[MovieApiViewModel::class.java]
 
         return binding.root
     }
@@ -82,16 +59,14 @@ class ProfileFragment : Fragment() {
                 tvUsername.text = txtUname
             }
 
-            viewModelUser.getFavorite().observe(viewLifecycleOwner) { favorite ->
-                val listIdMovie: MutableList<Int> = emptyList<Int>().toMutableList()
-                Log.d("listIdMHG", favorite.toString())
-                for (fav in favorite) {
-                    if (fav.email == user.email) {
-                        listIdMovie.add(fav.idMovie!!)
-
-                    }
+            viewModelUser.getFavorite(user.email).observe(viewLifecycleOwner){fav->
+                Log.d("favoriteEmail", "tesFav $fav")
+                if (fav.isNullOrEmpty()){
+                    binding.imgWarn.visibility = View.VISIBLE
+                }else{
+                    binding.imgWarn.visibility = View.INVISIBLE
+                    showList(fav)
                 }
-                getFavorite(listIdMovie)
             }
         }
 
@@ -108,39 +83,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun getFavorite(listIdMovie: MutableList<Int>?) {
-        val listFavorite: MutableList<GetDetailMovieResponse> =
-            emptyList<GetDetailMovieResponse>().toMutableList()
-        for (id in listIdMovie!!) {
-            viewModelMovie.getDetailMovie(id).observe(viewLifecycleOwner) {
-                when (it.status) {
-                    SUCCESS -> {
-                        listFavorite.add(it.data!!)
-                        viewModelMovie.listFavorite.postValue(listFavorite)
-                    }
-                    ERROR -> Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                    LOADING -> Log.d("loading", it.message.toString())
-                }
-            }
-        }
-
-        viewModelMovie.listFavorite.observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.imgWarn.visibility = View.INVISIBLE
-                showList(it)
-            }else{
-                binding.imgWarn.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun showList(listFavorite: List<GetDetailMovieResponse>?) {
+    private fun showList(listFavorite: List<Favorite>?) {
         Log.d("listEmp", "list ${listFavorite.toString()}")
         binding.rvFavorite.isNestedScrollingEnabled = false
         binding.rvFavorite.layoutManager = GridLayoutManager(requireContext(), 3)
         val adapter = FavoriteAdapter(object : FavoriteAdapter.OnClickListener {
-            override fun onClickItem(data: GetDetailMovieResponse) {
-                viewModelMovie.id.postValue(data.id)
+            override fun onClickItem(data: Favorite) {
+                viewModelMovie.id.postValue(data.idMovie)
                 Navigation.findNavController(requireView())
                     .navigate(R.id.action_profileFragment2_to_detailFragment)
             }

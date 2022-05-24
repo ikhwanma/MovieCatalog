@@ -41,8 +41,11 @@ interface ApiService {
     ): GetPopularMovieResponse
 
     //=====================User========================
+
     @GET("/users")
-    suspend fun getAllUsers() : List<GetUserResponseItem>
+    suspend fun getUser(
+        @Query("email") email: String
+    ) : List<GetUserResponseItem>
 
     @POST("/users")
     suspend fun addUsers(

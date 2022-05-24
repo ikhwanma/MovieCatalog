@@ -11,9 +11,9 @@ interface FavoriteDao {
     @Insert
     fun addFavorite(favorite: Favorite): Long
 
-    @Query("SELECT * FROM Favorite")
-    fun getFavorite() : LiveData<List<Favorite>>
-
     @Delete
     fun deleteFavorite(favorite: Favorite) : Int
+
+    @Query("SELECT * FROM Favorite WHERE Favorite.email = :email")
+    fun getFavorite(email : String) : LiveData<List<Favorite>>
 }

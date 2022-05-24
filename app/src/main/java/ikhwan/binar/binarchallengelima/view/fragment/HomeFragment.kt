@@ -9,15 +9,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.WithFragmentBindings
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
-import ikhwan.binar.binarchallengelima.data.helper.ApiHelper
-import ikhwan.binar.binarchallengelima.data.network.ApiClient
-import ikhwan.binar.binarchallengelima.data.room.FavoriteDatabase
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.view.adapter.MovieAdapter
 import ikhwan.binar.binarchallengelima.view.adapter.MovieLinearAdapter
@@ -27,16 +26,15 @@ import ikhwan.binar.binarchallengelima.model.nowplaying.ResultNow
 import ikhwan.binar.binarchallengelima.model.popularmovie.ResultMovie
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
-import ikhwan.binar.binarchallengelima.viewmodel.ViewModelFactory
 import java.util.*
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModelMovie: MovieApiViewModel
-    private lateinit var viewModelUser: UserApiViewModel
+    private val viewModelMovie: MovieApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModelUser: UserApiViewModel by hiltNavGraphViewModels(R.id.nav_main)
     private lateinit var pref: DataStoreManager
 
     override fun onCreateView(
@@ -50,28 +48,10 @@ class HomeFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar?.title = ""
         pref = DataStoreManager(requireContext())
 
-        viewModelUser = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.userInstance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[UserApiViewModel::class.java]
-        viewModelMovie = ViewModelProvider(
-            requireActivity(),
-            ViewModelFactory(
-                ApiHelper(ApiClient.instance),
-                pref,
-                FavoriteDatabase.getInstance(requireContext())!!
-                    .favoriteDao()
-            )
-        )[MovieApiViewModel::class.java]
 
         viewModelUser.getEmail().observe(viewLifecycleOwner) {
             val email = it
-            viewModelUser.getAllUsers().observe(viewLifecycleOwner) { user ->
+            /*viewModelUser.getAllUser().observe(viewLifecycleOwner) { user ->
                 when (user.status) {
                     SUCCESS -> {
                         for (data in user.data!!) {
@@ -93,9 +73,27 @@ class HomeFragment : Fragment() {
                         .show()
                     LOADING -> Log.d("loadingMsg", "Loading")
                 }
+            }*/
+            viewModelUser.getUser(email).observe(viewLifecycleOwner){ user ->
+                when (user.status){
+                    SUCCESS -> {
+                        val data = user.data!![0]
+                        (activity as AppCompatActivity?)!!.supportActionBar?.title =
+                            "Welcome, ${
+                                data.username.replaceFirstChar { userData ->
+                                    if (userData.isLowerCase()) userData.titlecase(
+                                        Locale.getDefault()
+                                    ) else userData.toString()
+                                }
+                            }!"
+                        viewModelUser.user.postValue(data)
+                    }
+                    ERROR -> Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT)
+                        .show()
+                    LOADING -> Log.d("loadingMsg", "Loading")
+                }
             }
         }
-
         val ai: ApplicationInfo = requireActivity().applicationContext.packageManager
             .getApplicationInfo(
                 requireActivity().applicationContext.packageName,
@@ -145,7 +143,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
 
         viewModelMovie.getNowPlaying().observe(viewLifecycleOwner) {
             when (it.status) {
