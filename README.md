@@ -1,4 +1,4 @@
-# BinarChallengeEnam
+# BinarChallengeTujuh
 Using TMDB API for list and detail movie, and using mockApi.io for Login and RegisterUser
 
 ## WARNING!!
