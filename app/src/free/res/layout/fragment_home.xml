@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:fillViewport="true"
+    tools:context=".view.fragment.HomeFragment"
+    tools:ignore="ScrollViewCount">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tv_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="@string/now_playing"
+            android:textColor="@color/midnight_blue"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_now"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_below="@+id/tv_now"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_now" />
+
+        <TextView
+            android:id="@+id/tv_popular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rv_now"
+            android:layout_marginHorizontal="10dp"
+            android:text="@string/popular_movie"
+            android:textColor="@color/midnight_blue"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_movie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_popular"
+            android:layout_alignParentBottom="true"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_movie" />
+
+
+        <Switch
+            android:id="@+id/switch_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/rv_movie"
+            android:layout_below="@id/rv_now"
+            android:layout_marginEnd="-5dp"
+            android:layout_toStartOf="@+id/img_list"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rv_movie"
+            android:layout_below="@+id/rv_now"
+            android:layout_marginEnd="-5dp"
+            android:layout_toStartOf="@+id/switch_rv"
+            android:contentDescription="@string/image"
+            android:src="@drawable/ic_round_grid_view_24" />
+
+        <ImageView
+            android:id="@+id/img_list"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rv_movie"
+            android:layout_below="@+id/rv_now"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/image"
+            android:src="@drawable/ic_baseline_view_list_24" />
+    </RelativeLayout>
+
+
+</androidx.core.widget.NestedScrollView>

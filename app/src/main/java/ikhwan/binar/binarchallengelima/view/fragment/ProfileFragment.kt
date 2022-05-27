@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,15 +16,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.room.Favorite
-import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentProfileBinding
-import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
 import ikhwan.binar.binarchallengelima.view.adapter.FavoriteAdapter
 import ikhwan.binar.binarchallengelima.view.dialogfragment.ShowImageUserDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 
-@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null

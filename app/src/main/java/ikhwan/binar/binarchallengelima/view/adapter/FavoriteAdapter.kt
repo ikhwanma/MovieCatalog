@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ikhwan.binar.binarchallengelima.data.room.Favorite
 import ikhwan.binar.binarchallengelima.databinding.ItemFavoriteBinding
-import ikhwan.binar.binarchallengelima.model.detailmovie.GetDetailMovieResponse
 
 class FavoriteAdapter(val onItemClick: OnClickListener) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemFavoriteBinding): RecyclerView.ViewHolder(binding.root) {

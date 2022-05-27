@@ -16,14 +16,12 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.data.utils.Status
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentLoginBinding
 import ikhwan.binar.binarchallengelima.view.dialogfragment.LoginWaitDialogFragment
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import java.util.regex.Pattern
 
-@AndroidEntryPoint
 class LoginFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentLoginBinding? = null
@@ -120,7 +118,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
                     }
                     ERROR -> {
-                        viewModelUser.loginCheck.postValue(true)
+                        viewModelUser.loginStatus.postValue(true)
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
                     LOADING -> {

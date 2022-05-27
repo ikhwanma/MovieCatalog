@@ -14,7 +14,6 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.WithFragmentBindings
 import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
@@ -28,7 +27,7 @@ import ikhwan.binar.binarchallengelima.viewmodel.MovieApiViewModel
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import java.util.*
 
-@AndroidEntryPoint
+
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -51,29 +50,7 @@ class HomeFragment : Fragment() {
 
         viewModelUser.getEmail().observe(viewLifecycleOwner) {
             val email = it
-            /*viewModelUser.getAllUser().observe(viewLifecycleOwner) { user ->
-                when (user.status) {
-                    SUCCESS -> {
-                        for (data in user.data!!) {
-                            if (email == data.email) {
-                                (activity as AppCompatActivity?)!!.supportActionBar?.title =
-                                    "Welcome, ${
-                                        data.username.replaceFirstChar { userData ->
-                                            if (userData.isLowerCase()) userData.titlecase(
-                                                Locale.getDefault()
-                                            ) else userData.toString()
-                                        }
-                                    }!"
-                                viewModelUser.user.postValue(data)
-                                break
-                            }
-                        }
-                    }
-                    ERROR -> Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT)
-                        .show()
-                    LOADING -> Log.d("loadingMsg", "Loading")
-                }
-            }*/
+
             viewModelUser.getUser(email).observe(viewLifecycleOwner){ user ->
                 when (user.status){
                     SUCCESS -> {

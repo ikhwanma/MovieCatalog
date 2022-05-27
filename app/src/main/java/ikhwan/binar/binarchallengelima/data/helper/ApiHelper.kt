@@ -1,6 +1,5 @@
 package ikhwan.binar.binarchallengelima.data.helper
 
-import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
 import ikhwan.binar.binarchallengelima.data.network.ApiService
 import javax.inject.Inject

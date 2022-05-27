@@ -4,172 +4,205 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:fillViewport="true"
     android:paddingHorizontal="20dp"
+
     android:paddingVertical="10dp"
     tools:context=".view.fragment.EditProfileFragment">
 
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center_horizontal"
-            app:cardCornerRadius="75dp">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/img_user"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/image"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_person_24" />
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerInParent="true"
-                    android:alpha="0.4"
-                    android:contentDescription="@string/image"
-                    android:src="@drawable/ic_blue_edit_24" />
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:text="@string/username"
-            android:textColor="@color/midnight_blue"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/input_nama"
-            style="@style/InputTextStyle"
-            android:autofillHints="username"
-            android:hint="@string/masukkan_nama"
-            android:inputType="text" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:text="@string/nama_lengkap"
-            android:textColor="@color/midnight_blue"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/input_full_name"
-            style="@style/InputTextStyle"
-            android:layout_marginTop="5dp"
-            android:autofillHints="name"
-            android:hint="@string/masukkan_nama_lengkap"
-            android:inputType="text" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:text="@string/alamat"
-            android:textColor="@color/midnight_blue"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/input_alamat"
-            style="@style/InputTextStyle"
-            android:layout_marginTop="5dp"
-            android:autofillHints="postalAddress"
-            android:hint="@string/masukkan_alamat"
-            android:inputType="text" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:text="@string/email_can_t_be_edited"
-            android:textColor="@color/midnight_blue"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/input_email"
-            style="@style/InputTextStyle"
-            android:layout_marginTop="5dp"
-            android:autofillHints="emailAddress"
-            android:focusable="false"
-            android:hint="@string/masukkan_email"
-            android:inputType="none"
-            android:textColor="@color/grey"
-            android:textIsSelectable="true"
-            tools:ignore="TextFields" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:text="@string/password"
-            android:textColor="@color/midnight_blue"
-            android:textSize="18sp" />
-
-
+        >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/input_password"
-                style="@style/InputTextStyle"
-                android:layout_marginTop="5dp"
-                android:autofillHints="password"
-                android:hint="@string/masukkan_password"
-                android:inputType="textPassword" />
-
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            >
             <ImageView
-                android:id="@+id/btn_view_pass"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignTop="@+id/input_password"
-                android:layout_alignEnd="@+id/input_password"
-                android:layout_alignBottom="@+id/input_password"
-                android:layout_marginEnd="5dp"
-                android:contentDescription="@string/see_password"
-                android:src="@drawable/ic_outline_remove_green_eye_24" />
+                android:id="@+id/img_lock"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/image"
+                android:src="@drawable/ic_baseline_lock_24" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/unlock_premium_to_update_profile"
+                android:textColor="@color/midnight_blue_variant"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_below="@+id/img_lock"
+                android:layout_centerHorizontal="true"/>
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:text="@string/tanggal_lahir"
-            android:textColor="@color/midnight_blue"
-            android:textSize="18sp" />
+            android:visibility="gone"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="75dp">
 
-        <EditText
-            android:id="@+id/input_date"
-            style="@style/InputTextStyle"
-            android:layout_marginTop="5dp"
-            android:autofillHints="date"
-            android:focusable="false"
-            android:hint="@string/masukkan_tanggal_lahir"
-            android:inputType="none"
-            android:textIsSelectable="true"
-            tools:ignore="TextFields" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btn_update"
-            style="@style/ButtonStyle"
-            android:layout_marginTop="20dp"
-            android:text="@string/update_user" />
+                    <ImageView
+                        android:id="@+id/img_user"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/image"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_person_24" />
 
-    </LinearLayout>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:alpha="0.4"
+                        android:contentDescription="@string/image"
+                        android:src="@drawable/ic_blue_edit_24" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="@string/username"
+                android:textColor="@color/midnight_blue"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/input_nama"
+                style="@style/InputTextStyle"
+                android:autofillHints="username"
+                android:hint="@string/masukkan_nama"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="@string/nama_lengkap"
+                android:textColor="@color/midnight_blue"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/input_full_name"
+                style="@style/InputTextStyle"
+                android:layout_marginTop="5dp"
+                android:autofillHints="name"
+                android:hint="@string/masukkan_nama_lengkap"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="@string/alamat"
+                android:textColor="@color/midnight_blue"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/input_alamat"
+                style="@style/InputTextStyle"
+                android:layout_marginTop="5dp"
+                android:autofillHints="postalAddress"
+                android:hint="@string/masukkan_alamat"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="@string/email_can_t_be_edited"
+                android:textColor="@color/midnight_blue"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/input_email"
+                style="@style/InputTextStyle"
+                android:layout_marginTop="5dp"
+                android:autofillHints="emailAddress"
+                android:focusable="false"
+                android:hint="@string/masukkan_email"
+                android:inputType="none"
+                android:textColor="@color/grey"
+                android:textIsSelectable="true"
+                tools:ignore="TextFields" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="@string/password"
+                android:textColor="@color/midnight_blue"
+                android:textSize="18sp" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/input_password"
+                    style="@style/InputTextStyle"
+                    android:layout_marginTop="5dp"
+                    android:autofillHints="password"
+                    android:hint="@string/masukkan_password"
+                    android:inputType="textPassword" />
+
+                <ImageView
+                    android:id="@+id/btn_view_pass"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignTop="@+id/input_password"
+                    android:layout_alignEnd="@+id/input_password"
+                    android:layout_alignBottom="@+id/input_password"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/see_password"
+                    android:src="@drawable/ic_outline_remove_green_eye_24" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="@string/tanggal_lahir"
+                android:textColor="@color/midnight_blue"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/input_date"
+                style="@style/InputTextStyle"
+                android:layout_marginTop="5dp"
+                android:autofillHints="date"
+                android:focusable="false"
+                android:hint="@string/masukkan_tanggal_lahir"
+                android:inputType="none"
+                android:textIsSelectable="true"
+                tools:ignore="TextFields" />
+
+            <Button
+                android:id="@+id/btn_update"
+                style="@style/ButtonStyle"
+                android:layout_marginTop="20dp"
+                android:text="@string/update_user" />
+        </LinearLayout>
+
+
+
+
+    </RelativeLayout>
 
 
 </ScrollView>

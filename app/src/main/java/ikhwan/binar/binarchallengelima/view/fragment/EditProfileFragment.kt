@@ -26,7 +26,6 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 import ikhwan.binar.binarchallengelima.R
-import ikhwan.binar.binarchallengelima.data.datastore.DataStoreManager
 import ikhwan.binar.binarchallengelima.data.utils.Status.*
 import ikhwan.binar.binarchallengelima.databinding.FragmentEditProfileBinding
 import ikhwan.binar.binarchallengelima.model.users.PostUserResponse
@@ -34,7 +33,6 @@ import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import java.io.ByteArrayOutputStream
 import java.util.*
 
-@AndroidEntryPoint
 class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentEditProfileBinding? = null

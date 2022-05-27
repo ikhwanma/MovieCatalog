@@ -20,12 +20,9 @@ class UserApiViewModel @Inject constructor(
     private val pref: DataStoreManager
 ) : ViewModel() {
 
-
     val user = MutableLiveData<GetUserResponseItem>()
     val loginStatus = SingleLiveEvent<Boolean>()
     val registerCheck = SingleLiveEvent<Boolean>()
-    val listUser = MutableLiveData<List<GetUserResponseItem>>()
-    val loginCheck = SingleLiveEvent<Boolean>()
 
     fun setEmail(email: String) {
         viewModelScope.launch {

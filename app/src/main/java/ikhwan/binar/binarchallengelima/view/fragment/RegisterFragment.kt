@@ -22,7 +22,6 @@ import ikhwan.binar.binarchallengelima.view.dialogfragment.RegisterWaitDialogFra
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 import java.util.regex.Pattern
 
-@AndroidEntryPoint
 class RegisterFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!

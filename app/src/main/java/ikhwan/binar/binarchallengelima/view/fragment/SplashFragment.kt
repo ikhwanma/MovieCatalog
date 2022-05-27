@@ -18,7 +18,6 @@ import ikhwan.binar.binarchallengelima.R
 import ikhwan.binar.binarchallengelima.databinding.FragmentSplashBinding
 import ikhwan.binar.binarchallengelima.viewmodel.UserApiViewModel
 
-@AndroidEntryPoint
 class SplashFragment : Fragment() {
 
     private var _binding : FragmentSplashBinding? = null

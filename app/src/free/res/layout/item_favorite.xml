@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="123dp"
+    android:layout_height="180dp">
+
+    <ImageView
+        android:id="@+id/img_movie"
+        android:layout_width="122dp"
+        android:layout_height="179dp"
+        android:layout_gravity="center"
+        android:src="@color/midnight_blue"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/image" />
+
+</androidx.cardview.widget.CardView>
