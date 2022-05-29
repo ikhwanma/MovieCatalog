@@ -42,3 +42,5 @@ For example :
 - Add image profile for user & save image in data store
 - Using design pattern MVVM
 - Using navigation component single activity
+- Using dependency injection
+- Unit Test for networking and room database
