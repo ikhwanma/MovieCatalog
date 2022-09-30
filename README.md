@@ -1,5 +1,5 @@
-# BinarChallengeTujuh
-Using TMDB API for list and detail movie, and using mockApi.io for Login and RegisterUser
+# Movie Catalog
+This project is made to fulfill Binar Academy Bootcamp challenge chapter 7, using TMDB API for list and detail movie, and using mockApi.io for Login and RegisterUser
 
 ## WARNING!!
 - Don't use your personal data when register an account, because the API is public
@@ -24,7 +24,7 @@ For example :
             android:value = "${TheMovieDBApi}"/>
 ```
 - Edit android:value to your TMDB API Key
-<p>For example</p>
+<p>For example :</p>
 
 ```xml
 <meta-data
